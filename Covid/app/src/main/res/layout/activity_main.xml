@@ -94,9 +94,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="13dp"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="text"
+        android:text="TEST" />
 
     <EditText
         android:id="@+id/editTextName"
@@ -106,7 +107,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="82dp"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:text="diego" />
 
     <EditText
         android:id="@+id/editTextLastName"
@@ -116,17 +118,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="157dp"
         android:ems="10"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/editTextCom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="207dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="text"
+        android:text="Iorio" />
 
     <EditText
         android:id="@+id/editTextDNI"
@@ -138,19 +131,8 @@
         android:layout_marginTop="291dp"
         android:layout_marginEnd="100dp"
         android:ems="10"
-        android:inputType="number" />
-
-    <EditText
-        android:id="@+id/editTextEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="224dp"
-        android:layout_marginEnd="97dp"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
+        android:inputType="number"
+        android:text="111111111" />
 
     <TextView
         android:id="@+id/textView"
@@ -182,7 +164,8 @@
         android:layout_marginStart="101dp"
         android:layout_marginBottom="133dp"
         android:ems="10"
-        android:inputType="number" />
+        android:inputType="number"
+        android:text="11" />
 
     <EditText
         android:id="@+id/editTexPassword"
@@ -190,8 +173,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="274dp"
+        android:layout_marginBottom="283dp"
         android:ems="10"
-        android:inputType="number" />
+        android:inputType="text"
+        android:text="passworddddd" />
+
+    <EditText
+        android:id="@+id/editTextEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="87dp"
+        android:layout_marginTop="230dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="d@gmial.com" />
+
+    <EditText
+        android:id="@+id/editTextCom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="206dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="3900" />
 
 </RelativeLayout>

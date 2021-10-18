@@ -53,18 +53,18 @@ public class ServiceHTTP_POST extends IntentService {
 
     protected void ejectuarPost(String uri,JSONObject datosJson){
         String result  = POST(uri,datosJson);
-       /* if(result == null){
-            Log.i("LOGUEO SERVICE","Error en GET:\n"+mExeption.tostring);
-            return:
-        }*/
+        if(result == null){
+            Log.i("LOGUEO SERVICE","Error en POST:\n"+mExeption.toString());
+            return;
+        }
 
         if(result == "NO OK "){
             Log.i("LOGUEO SERVICE", "se recibio response NO OK");
             return;
         }
 
-        Intent i = new  Intent("com.example.covid.intentservice.intent.action.RESPUESTA_OPERACION");
-        i.putExtra("datosJason",result);
+        Intent i = new  Intent("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+        i.putExtra("datosJson",result);
         sendBroadcast(i);
     }
 

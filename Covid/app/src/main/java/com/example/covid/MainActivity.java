@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configurarBroadcastReciever() {
-        filtro = new IntentFilter( "com.example.covid.intentservice.intent.action.RESPUESTA_OPERACION");
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_OPERACION");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverReg,filtro);
     }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 obj.put("dni",Integer.parseInt(txtDni.getText().toString()));
                 obj.put("email",txtEmail.getText().toString());
                 obj.put("password",txtPassword.getText().toString());
-                obj.put("comission",txtComission.getText().toString());
+                obj.put("commission",txtComission.getText().toString());
                 obj.put("group",11);//Integer.parseInt(txtGroup.getText().toString())
 
                 Intent i = new Intent(MainActivity.this,ServiceHTTP_POST.class);
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
 
-                txtResultado.setText(datosJsonString);
+                //txtResultado.setText(datosJsonString);
                 Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
                /* String token  =datosJson.getString("TOKEN");
                 Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);*/

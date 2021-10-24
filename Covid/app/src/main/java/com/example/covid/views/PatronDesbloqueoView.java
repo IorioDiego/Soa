@@ -1,4 +1,6 @@
-package com.example.postcovid;
+package com.example.covid.views;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,37 +8,39 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.andrognito.patternlockview.PatternLockView;
 import com.andrognito.patternlockview.listener.PatternLockViewListener;
 import com.andrognito.patternlockview.utils.PatternLockUtils;
-import com.example.postcovid.ui.login.LoginActivity;
+import com.example.covid.IUserRegister;
+import com.example.covid.R;
+import com.example.covid.UserRegister;
+import com.example.covid.UserRegisterPresenter;
+import com.example.covid.interfaces.IPatronDesbloqueo;
+import com.example.covid.presenters.PatronDesbloquePresenter;
 
 import java.util.List;
 
 import io.paperdb.Paper;
 
-
-public class BloqueoActivity extends AppCompatActivity {
+public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDesbloqueo.View {
 
     PatternLockView mPatterLockView;
-    String patronBase = "patron";
+
     String patronFinal = "";
+    IPatronDesbloqueo.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
+        presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bloqueo);
-        Paper.init(this);
+        setContentView(R.layout.activity_patron_desbloqueo);
+        presenter.inicializarPaper((IPatronDesbloqueo.View) this);
 
-        final String patronGuardado = Paper.book().read(patronBase);
+        final String patronGuardado = presenter.leerPaper();
+        if ( patronGuardado != null  && !patronGuardado.equals("null")){
 
-        if ( patronGuardado != null  && !patronGuardado.equals("null")) {
-
-
-            setContentView(R.layout.activity_confirmar_bloque);
-
+            setContentView(R.layout.activity_confirmar_patron);
             mPatterLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
             mPatterLockView.addPatternLockListener(new PatternLockViewListener() {
                 @Override
@@ -53,11 +57,11 @@ public class BloqueoActivity extends AppCompatActivity {
                 public void onComplete(List<PatternLockView.Dot> pattern) {
                     String final_pattern = PatternLockUtils.patternToString(mPatterLockView, pattern);
                     if (final_pattern.equals(patronGuardado)) {
-                        Toast.makeText(BloqueoActivity.this, "Patron CORRECTO", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(BloqueoActivity.this, LoginActivity.class);
+                        Toast.makeText(PatronDesbloqueoView.this, "Patron CORRECTO", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(PatronDesbloqueoView.this, UserRegister.class);//podria ir en el presenter
                         startActivity(intent);
                     } else
-                        Toast.makeText(BloqueoActivity.this, "Patron INCORRECTO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PatronDesbloqueoView.this, "Patron INCORRECTO", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -65,8 +69,11 @@ public class BloqueoActivity extends AppCompatActivity {
 
                 }
             });
-        } else {
-            setContentView(R.layout.activity_bloqueo);
+
+        }else
+        {
+
+            setContentView(R.layout.activity_patron_desbloqueo);
             mPatterLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
             mPatterLockView.addPatternLockListener(new PatternLockViewListener() {
 
@@ -82,7 +89,7 @@ public class BloqueoActivity extends AppCompatActivity {
 
                 @Override
                 public void onComplete(List<PatternLockView.Dot> pattern) {
-                     patronFinal = PatternLockUtils.patternToString(mPatterLockView, pattern);
+                    patronFinal = PatternLockUtils.patternToString(mPatterLockView, pattern);
                 }
 
                 @Override
@@ -95,13 +102,20 @@ public class BloqueoActivity extends AppCompatActivity {
             btnGuardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Paper.book().write(patronBase,patronFinal);
-                    Toast.makeText(BloqueoActivity.this, "Patron Guardado Correctamente", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(BloqueoActivity.this, ConfirmarBloque.class);
-                    //startActivity(intent);
+                    presenter.escribirPaper( patronFinal);
+                  //  Paper.book().write(patronBase,patronFinal);
+                    Toast.makeText(PatronDesbloqueoView.this, "Patron Guardado Correctamente", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(PatronDesbloqueoView.this, ConfirmarPatronView.class);
+                    //startActivity(intent);////////ESTO ROMPE COSAASSS
+                    
                 }
             });
 
         }
+
+
     }
+
+
+
 }

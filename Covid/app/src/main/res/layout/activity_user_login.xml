@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.UserLogin">
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="92dp"
+        android:layout_height="34dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="160dp"
+        android:text="Email" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="88dp"
+        android:layout_height="34dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="277dp"
+        android:text="Password" />
+
+    <Button
+        android:id="@+id/buttonRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="27dp"
+        android:layout_marginBottom="283dp"
+        android:text="Registrarse" />
+
+    <Button
+        android:id="@+id/buttonLogIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="280dp"
+        android:text="Iniciar Sesion" />
+
+    <EditText
+        android:id="@+id/editTextLoginEmail"
+        android:layout_width="283dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="148dp"
+        android:layout_marginEnd="13dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="d@gmail.com" />
+
+    <EditText
+        android:id="@+id/editTextLoginPssw"
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="282dp"
+        android:layout_marginEnd="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="1111111111" />
+
+</RelativeLayout>

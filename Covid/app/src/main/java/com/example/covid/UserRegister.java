@@ -67,6 +67,9 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
        configurarBroadcastReciever();
 
+
+
+
     }
 
 
@@ -119,6 +122,16 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
         presenter.registrarse(environment,name,lastname,dni,email,pssw,com,group);
     }
 
+    @Override
+    public Context getContexto() {
+        return  getApplicationContext();
+    }
+
+    @Override
+    public Object getSystemService() {
+        return  getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
+
 
     public class ReceptorOperacion extends BroadcastReceiver
     {
@@ -135,8 +148,10 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
                 //txtResultado.setText(datosJsonString);
                 Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
-               /* String token  =datosJson.getString("TOKEN");
-                Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);*/
+
+
+                String token  =datosJson.getString("token");
+                Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
 
             } catch (JSONException e) {
                 e.printStackTrace();

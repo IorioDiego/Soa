@@ -32,7 +32,7 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
-        presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patron_desbloqueo);
         presenter.inicializarPaper((IPatronDesbloqueo.View) this);
@@ -58,7 +58,7 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                     String final_pattern = PatternLockUtils.patternToString(mPatterLockView, pattern);
                     if (final_pattern.equals(patronGuardado)) {
                         Toast.makeText(PatronDesbloqueoView.this, "Patron CORRECTO", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(PatronDesbloqueoView.this, UserRegister.class);//podria ir en el presenter
+                        Intent intent = new Intent(PatronDesbloqueoView.this, UserLogin.class);//podria ir en el presenter
                         startActivity(intent);
                     } else
                         Toast.makeText(PatronDesbloqueoView.this, "Patron INCORRECTO", Toast.LENGTH_SHORT).show();
@@ -106,7 +106,7 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                   //  Paper.book().write(patronBase,patronFinal);
                     Toast.makeText(PatronDesbloqueoView.this, "Patron Guardado Correctamente", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(PatronDesbloqueoView.this, ConfirmarPatronView.class);
-                    //startActivity(intent);////////ESTO ROMPE COSAASSS
+                    startActivity(intent);////////ESTO ROMPE COSAASSS
                     
                 }
             });

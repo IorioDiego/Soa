@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,27 +36,42 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
 
     @Override
     public void registrarse(String environment, String name, String lastname, String dni, String email, String pssw, String com, String group) {
-        JSONObject obj = new JSONObject();
-        try {
+        ConnectivityManager connectivityManager = (ConnectivityManager) view.getSystemService();
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-            obj.put("env", environment);
-            obj.put("name", name);
-            obj.put("lastname", lastname);
-            obj.put("dni", dni);
-            obj.put("email", email);
-            obj.put("password", pssw);
-            obj.put("commission", com);
-            obj.put("group", group);//Integer.parseInt(txtGroup.getText().toString())
+        if (networkInfo != null && networkInfo.isConnected()) {
 
-            Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
-             i.putExtra("uri",URI_REGISTER_USER);
-            i.putExtra("datosJson",obj.toString());
+            JSONObject obj = new JSONObject();
+            try {
 
-            ((Context) view).startService(i);
+                obj.put("env", environment);
+                obj.put("name", name);
+                obj.put("lastname", lastname);
+                obj.put("dni", dni);
+                obj.put("email", email);
+                obj.put("password", pssw);
+                obj.put("commission", com);
+                obj.put("group", group);//Integer.parseInt(txtGroup.getText().toString())
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+                Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
+                i.putExtra("uri",URI_REGISTER_USER);
+                i.putExtra("datosJson",obj.toString());
+
+                ((Context) view).startService(i);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }else
+        {
+
+            Toast.makeText(view.getContexto(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
+
         }
+
+
+
     }
 /*
 

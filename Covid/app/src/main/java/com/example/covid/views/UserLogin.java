@@ -166,8 +166,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
                    ;
 
                     // Si detecta 0 lo represento
-                    if( event.values[0] >= 10 )
+                    if( event.values[0]  < event.sensor.getMaximumRange() )
                     {
+                        float e = event.sensor.getMaximumRange();
                         Toast.makeText(getApplicationContext(), "ME CIERRO", Toast.LENGTH_SHORT).show();
                     }
                     break;

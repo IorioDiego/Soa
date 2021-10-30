@@ -97,7 +97,7 @@
         android:layout_marginTop="13dp"
         android:ems="10"
         android:inputType="text"
-        android:text="TEST" />
+        android:text="PROD" />
 
     <EditText
         android:id="@+id/editTextName"
@@ -108,7 +108,7 @@
         android:layout_marginTop="82dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="diego" />
+        android:text="Diego" />
 
     <EditText
         android:id="@+id/editTextLastName"
@@ -132,7 +132,7 @@
         android:layout_marginEnd="100dp"
         android:ems="10"
         android:inputType="number"
-        android:text="111111111" />
+        android:text="40730349" />
 
     <TextView
         android:id="@+id/textView"
@@ -176,7 +176,7 @@
         android:layout_marginBottom="283dp"
         android:ems="10"
         android:inputType="text"
-        android:text="passworddddd" />
+        android:text="12345678" />
 
     <EditText
         android:id="@+id/editTextEmail"
@@ -188,7 +188,7 @@
         android:layout_marginTop="230dp"
         android:ems="10"
         android:inputType="text"
-        android:text="d@gmial.com" />
+        android:text="diorio@gmail.com" />
 
     <EditText
         android:id="@+id/editTextCom"

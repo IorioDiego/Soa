@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.covid.views.UserLogin;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,10 +39,12 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
     public  IntentFilter filtro;
 
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
+   // private RecpetorEvento receiverEvento = new RecpetorEvento();
 
     private IUserRegister.Presenter presenter;
 
-
+    String token;
+    String tokenRefresh;
 
 
 
@@ -66,15 +70,21 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
         btnReg.setOnClickListener(HandlerBtnReg);
 
        configurarBroadcastReciever();
+        //configurarBroadcastRecieverPostEvento();
 
 
 
 
     }
+/*
+    private void configurarBroadcastRecieverPostEvento() {
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.POST_EVENTO");
+        filtro.addCategory(Intent.CATEGORY_DEFAULT);
+       registerReceiver(receiverEvento,filtro);
+    }*/
 
 
-
-   private void configurarBroadcastReciever() {
+    private void configurarBroadcastReciever() {
         filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_OPERACION");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverReg,filtro);
@@ -93,27 +103,6 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
                     txtComission.getText().toString(),
                     txtGroup.getText().toString());
 
-       /*     JSONObject obj = new JSONObject();
-            try {
-                obj.put("env",txtEnv.getText().toString());
-                obj.put("name",txtName.getText().toString());
-                    obj.put("lastname",txtLastName.getText().toString());
-                obj.put("dni",txtDni.getText().toString());
-                obj.put("email",txtEmail.getText().toString());
-                obj.put("password",txtPassword.getText().toString());
-                obj.put("commission",txtComission.getText().toString());
-                obj.put("group",txtGroup.getText().toString());//Integer.parseInt(txtGroup.getText().toString())
-
-
-              //  Intent i = new Intent(UserRegister.this,ServiceHTTP_POST.class);
-               // i.putExtra("uri",URI_REGISTER_USER);
-               // i.putExtra("datosJson",obj.toString());
-
-               // startService(i);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }*/
         }
     };
 
@@ -133,6 +122,51 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
     }
 
 
+   /* public class RecpetorEvento extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            try {
+                String datosJsonString  = intent.getStringExtra("datosJson");
+                JSONObject datosJson = new JSONObject(datosJsonString);
+
+                Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
+
+                //txtResultado.setText(datosJsonString);
+                Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
+               String resultadoRequest = datosJson.getString("success");
+
+               if(resultadoRequest == "true"){
+
+                   Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
+
+
+                   Intent i = new Intent(UserRegister.this, Test.class);
+                   i.putExtra("token",token);
+                    i.putExtra("token_refresh",tokenRefresh);
+                   startActivity(i);
+
+               }else
+               {
+                   String msg  =datosJson.getString("msg");
+                   Log.i("LOGUEO_MAIN", msg);
+                   Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+               }
+
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }*/
+
+
     public class ReceptorOperacion extends BroadcastReceiver
     {
 
@@ -148,10 +182,37 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
                 //txtResultado.setText(datosJsonString);
                 Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
+                String resultadoRequest = datosJson.getString("success");
 
 
-                String token  =datosJson.getString("token");
-                Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
+                if(resultadoRequest.equals("true")){
+                   /* token  =datosJson.getString("token");
+                    tokenRefresh = datosJson.getString("token_refresh");*/
+                    Intent i = new Intent(UserRegister.this, UserLogin.class);
+                    startActivity(i);
+                  //  presenter.registrarEvento("TEST","EVENTO_LOGUEO","El usuario se registro en el sistema",token);
+                }
+
+
+          /*     if(resultadoRequest == "true"){
+                    token  =datosJson.getString("token");
+                   Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
+                    tokenRefresh = datosJson.getString("token_refresh");
+
+                   Intent i = new Intent(UserRegister.this, Test.class);
+                   i.putExtra("token",token);
+                    i.putExtra("token_refresh",tokenRefresh);
+                   startActivity(i);
+
+               }else
+               {
+                   String msg  =datosJson.getString("msg");
+                   Log.i("LOGUEO_MAIN", msg);
+                   Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+               }*/
+
+
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -159,5 +220,8 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
         }
     }
+
+
+
 
 }

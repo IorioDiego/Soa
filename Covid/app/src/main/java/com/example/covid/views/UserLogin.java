@@ -6,17 +6,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.covid.R;
+import com.example.covid.Test;
+import com.example.covid.Timer;
 import com.example.covid.UserRegister;
 import com.example.covid.interfaces.IUserLogin;
 import com.example.covid.presenters.UserLoginPresenter;
@@ -24,7 +33,9 @@ import com.example.covid.presenters.UserLoginPresenter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserLogin extends AppCompatActivity implements IUserLogin.View {
+import java.text.DecimalFormat;
+
+public class UserLogin extends AppCompatActivity implements IUserLogin.View ,SensorEventListener {
 
 
     Button btnRegistro ;
@@ -33,7 +44,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     private EditText txtEmail;
     private EditText txtPssw;
 
+    private SensorManager sensores;
 
+    DecimalFormat dosdecimales = new DecimalFormat("###.###");
 
 
 
@@ -41,6 +54,11 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     public  IntentFilter filtro;
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
+    private ReceptorTimer receiverTimer = new ReceptorTimer();
+    private RecpetorEvento receiverEvento = new RecpetorEvento();
+    String token;
+    String tokenRefresh;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +74,12 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
         btnLogIn = (Button) findViewById(R.id.buttonLogIn);
         btnLogIn.setOnClickListener(HandlerBtnLogIn);
-
+        sensores = (SensorManager) getSystemService(SENSOR_SERVICE);
         configurarBroadcastReciever();
+        configurarBroadcastRecieverTimer();
+        configurarBroadcastRecieverPostEvento();
+
+
      /*   //Chequeo bateria
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = this.registerReceiver(null, ifilter);
@@ -86,6 +108,73 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     }
 
+    protected void Ini_Sensores()
+    {
+        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
+
+    }
+
+    // Metodo para parar la escucha de los sensores
+    private void Parar_Sensores()
+    {
+
+        sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
+
+    }
+
+    // Metodo que escucha el cambio de los sensores
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+        String txt = "";
+
+        // Cada sensor puede lanzar un thread que pase por aqui
+        // Para asegurarnos ante los accesos simult�neos sincronizamos esto
+
+     /*   synchronized (this)
+        {
+            Log.d("sensor", event.sensor.getName());
+
+            switch(event.sensor.getType())
+            {
+                case Sensor.TYPE_ACCELEROMETER :
+                    txt += "Acelerometro:\n";
+                    txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2 \n";
+                    txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2 \n";
+                    txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
+
+
+                    if ((event.values[0] == 0) && (event.values[1] == 0) && (event.values[2] == 90))
+                    {
+                        Toast.makeText(getApplicationContext(), "SE MOVIOOOOO", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+            }
+        }*/
+    }
+
+
+    private void configurarBroadcastRecieverPostEvento() {
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.POST_EVENTO");
+        filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiverEvento,filtro);
+    }
+
+
+    private void configurarBroadcastRecieverTimer() {
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.TIMER_ACT");
+        filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiverTimer,filtro);
+    }
+
     private void configurarBroadcastReciever() {
         filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_OPERACION");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
@@ -96,6 +185,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(UserLogin.this, UserRegister.class);
+            stopService(new Intent(UserLogin.this, Timer.class));
             startActivity(intent);
         }
     };
@@ -109,6 +199,8 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         }
     };
 
+
+
     @Override
     public Context getContexto() {
         return  getApplicationContext();
@@ -118,6 +210,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     public Object getSystemService() {
         return  getSystemService(Context.CONNECTIVITY_SERVICE);
     }
+
 
 
     public class ReceptorOperacion extends BroadcastReceiver
@@ -139,12 +232,132 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 //                String token  =datosJson.getString("token");
 //                Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
 
+                String resultadoRequest = datosJson.getString("success");
+
+
+                if(resultadoRequest.equals("true")){
+                    token  =datosJson.getString("token");
+                    tokenRefresh = datosJson.getString("token_refresh");
+
+                    presenter.registrarEvento("TEST","EVENTO_LOGUEO","El usuario se logueo en el sistema",token);
+                }
+
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         }
     }
+
+    public class RecpetorEvento extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            try {
+                String datosJsonString  = intent.getStringExtra("datosJson");
+                JSONObject datosJson = new JSONObject(datosJsonString);
+
+                Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
+
+                //txtResultado.setText(datosJsonString);
+                Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
+                String resultadoRequest = datosJson.getString("success");
+
+                if(resultadoRequest == "true"){
+
+                    Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
+
+                    startService(new Intent(UserLogin.this, Timer.class));
+                    Intent i = new Intent(UserLogin.this, Test.class);
+                    i.putExtra("token",token);
+                    i.putExtra("token_refresh",tokenRefresh);
+                    startActivity(i);
+
+                }else
+                {
+                    String msg  =datosJson.getString("msg");
+                    Log.i("LOGUEO_MAIN", msg);
+                    Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                }
+
+
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+
+    public class ReceptorTimer extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+                String finTimer  = intent.getStringExtra("Fin");
+            Toast.makeText(getApplicationContext(),"Se termino el tiempo",Toast.LENGTH_SHORT).show();
+
+
+
+            //cierra el servicio ya que no es necesario mantenerlo, sera creado al pulsar el boton nuevamente
+            stopService(new Intent(UserLogin.this, Timer.class));
+
+            startService(new Intent(UserLogin.this, Timer.class));
+
+
+        }
+    }
+
+
+    @Override
+    protected void onStop()
+    {// stopService(new Intent(UserLogin.this, Timer.class));
+
+        Parar_Sensores();
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {// stopService(new Intent(UserLogin.this, Timer.class));
+        Parar_Sensores();
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause()
+    {// stopService(new Intent(UserLogin.this, Timer.class));
+        Parar_Sensores();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart()
+    {//Actualizar token y reempezar timer
+        Ini_Sensores();
+
+        super.onRestart();
+    }
+
+    @Override
+    protected void onResume()
+    {//Actualizar token y reempezar timer
+        super.onResume();
+
+        Ini_Sensores();
+    }
+
 
 
 

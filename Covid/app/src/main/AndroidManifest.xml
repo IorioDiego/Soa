@@ -16,9 +16,14 @@
         android:theme="@style/Theme.Covid"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Test2"
+            android:exported="true" />
+        <activity
+            android:name=".Test"
+            android:exported="true" />
+        <activity
             android:name=".views.ConfirmarPatronView"
-            android:exported="true"
-            />
+            android:exported="true" />
         <activity
             android:name=".views.PatronDesbloqueoView"
             android:exported="true">
@@ -30,18 +35,20 @@
         </activity>
         <activity
             android:name=".UserRegister"
-            android:exported="true">
-        </activity>
-
+            android:exported="true" />
         <activity
             android:name=".views.UserLogin"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
 
         <service
             android:name=".ServiceHTTP_POST"
             android:enabled="true"
             android:label="ServicesHttp GET" />
+        <service
+            android:name=".Timer"
+            android:enabled="true"
+            android:label="TIMER"
+            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>

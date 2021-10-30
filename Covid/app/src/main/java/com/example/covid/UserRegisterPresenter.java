@@ -20,6 +20,7 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
     private IUserRegister.View view;
     private IUserRegister.Model model;
     private static final String URI_REGISTER_USER = "http://so-unlam.net.ar/api/api/register";
+    private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
    // public IntentFilter filtro;
   //  private ReceptorOperacion receiverReg = new ReceptorOperacion();
 
@@ -54,6 +55,7 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
                 obj.put("group", group);//Integer.parseInt(txtGroup.getText().toString())
 
                 Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
+                i.putExtra("evento","log");
                 i.putExtra("uri",URI_REGISTER_USER);
                 i.putExtra("datosJson",obj.toString());
 
@@ -72,6 +74,30 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
 
 
 
+    }
+/*
+    @Override
+    public void registrarEvento(String env, String event, String desc,String token) {
+
+        JSONObject obj = new JSONObject();
+        try {
+
+            obj.put("env", env);
+            obj.put("type_events", event);
+            obj.put("description", desc);
+
+
+            Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
+            i.putExtra("evento","RegistrarEvento");
+            i.putExtra("uri",URI_REGISTER_EVENT);
+            i.putExtra("datosJson",obj.toString());
+            i.putExtra("tokenEvento",token);
+
+            ((Context) view).startService(i);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 /*
 

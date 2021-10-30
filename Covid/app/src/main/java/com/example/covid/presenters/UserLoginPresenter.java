@@ -10,13 +10,14 @@ import com.example.covid.ServiceHTTP_POST;
 import com.example.covid.interfaces.IPatronDesbloqueo;
 import com.example.covid.interfaces.IUserLogin;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UserLoginPresenter  implements  IUserLogin.Presenter{
 
     private IUserLogin.View view;
     private static final String URI_LOGIN_USER = "http://so-unlam.net.ar/api/api/login";
-
+    private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
 
 
         public UserLoginPresenter(IUserLogin.View view){
@@ -36,11 +37,12 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
                 JSONObject obj = new JSONObject();
                 try {
 
-                    obj.put("env", email);
-                    obj.put("env", pssw);
+                    obj.put("email", email);
+                    obj.put("password", pssw);
 
 
                     Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
+                    i.putExtra("evento","log");
                     i.putExtra("uri",URI_LOGIN_USER);
                     i.putExtra("datosJson",obj.toString());
                     ((Context) view).startService(i);
@@ -57,6 +59,30 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
 
         }
 
+    @Override
+    public void registrarEvento(String env, String event, String desc, String token) {
+
+        JSONObject obj = new JSONObject();
+        try {
+
+            obj.put("env", env);
+            obj.put("type_events", event);
+            obj.put("description", desc);
+
+
+            Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
+            i.putExtra("evento","RegistrarEvento");
+            i.putExtra("uri",URI_REGISTER_EVENT);
+            i.putExtra("datosJson",obj.toString());
+            i.putExtra("tokenEvento",token);
+
+            ((Context) view).startService(i);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }

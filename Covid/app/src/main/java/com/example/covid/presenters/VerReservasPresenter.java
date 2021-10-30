@@ -14,15 +14,16 @@ public class VerReservasPresenter implements IVerReservas.Presenter {
 
     public VerReservasPresenter(IVerReservas.View view){
         this.view = view;
+        model = new ReservaModel();
     }
 
     @Override
     public void verReservas(String user) {
 
-        model = new ReservaModel();
+
         List<String> dates = model.getReservas(user, view.getContexto());
         for (String n: dates) {
-            Toast.makeText(view.getContexto(), n, Toast.LENGTH_SHORT);
+            Toast.makeText(view.getContexto(), "RESERVAS :"+ n, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -16,13 +16,13 @@ public class Timer extends IntentService {
 
     Intent i = new Intent( "com.example.intentservice.intent.action.TIMER_ACT");
 
-    CountDownTimer timerConexion = null;
+    CountDownTimer timerConection = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i("Servicio", "Comienza el timer...");
-        timerConexion = new CountDownTimer(15000, 1000) {// 840000 pra 14 minutos
+        timerConection = new CountDownTimer(15000, 1000) {// 840000 pra 14 minutos
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -42,7 +42,7 @@ public class Timer extends IntentService {
 
     @Override
     public void onDestroy() {
-      // timerConexion.cancel();
+       // timerConection.cancel();
         Log.i("Servicio", "Timer cancelado");
         super.onDestroy();
     }

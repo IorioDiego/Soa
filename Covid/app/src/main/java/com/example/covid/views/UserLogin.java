@@ -76,11 +76,11 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         btnLogIn.setOnClickListener(HandlerBtnLogIn);
         sensores = (SensorManager) getSystemService(SENSOR_SERVICE);
         configurarBroadcastReciever();
-        configurarBroadcastRecieverTimer();
+       // configurarBroadcastRecieverTimer();
         configurarBroadcastRecieverPostEvento();
 
 
-     /*   //Chequeo bateria
+       //Chequeo bateria
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = this.registerReceiver(null, ifilter);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -92,7 +92,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         // chequeo bateria*/
 
         //cheqoe internet
-   /*     ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -101,7 +101,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
             int i;
         } else {
             Toast.makeText(getApplicationContext(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
-        }*/
+        }
 
         //
 
@@ -111,6 +111,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
     protected void Ini_Sensores()
     {
         sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
+        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY),   SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -119,6 +120,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
     {
 
         sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY));
 
     }
 
@@ -138,7 +140,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         // Cada sensor puede lanzar un thread que pase por aqui
         // Para asegurarnos ante los accesos simult�neos sincronizamos esto
 
-     /*   synchronized (this)
+       synchronized (this)
         {
             Log.d("sensor", event.sensor.getName());
 
@@ -151,14 +153,27 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
                     txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
 
 
-                    if ((event.values[0] == 0) && (event.values[1] == 0) && (event.values[2] == 90))
+                    if ((Math.abs(event.values[0]) > 30) || (Math.abs(event.values[1]) > 30) || (Math.abs(event.values[2]) > 30))
                     {
                         Toast.makeText(getApplicationContext(), "SE MOVIOOOOO", Toast.LENGTH_SHORT).show();
                     }
                     break;
 
+                case Sensor.TYPE_PROXIMITY :
+                    txt += "Proximidad:\n";
+                    txt += event.values[0] + "\n";
+
+                   ;
+
+                    // Si detecta 0 lo represento
+                    if( event.values[0] >= 10 )
+                    {
+                        Toast.makeText(getApplicationContext(), "ME CIERRO", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
             }
-        }*/
+        }
     }
 
 
@@ -276,6 +291,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
                     Intent i = new Intent(UserLogin.this, Menu.class);
                     i.putExtra("token",token);
                     i.putExtra("token_refresh",tokenRefresh);
+                    i.putExtra("user", txtEmail.getText().toString());
                     startActivity(i);
 
                 }else

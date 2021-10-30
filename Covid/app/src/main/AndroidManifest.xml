@@ -16,6 +16,15 @@
         android:theme="@style/Theme.Covid"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".views.ReservasView1"
+            android:exported="true" />
+        <activity
+            android:name=".views.VerReservasView"
+            android:exported="true" />
+        <activity
+            android:name=".views.Menu"
+            android:exported="true" />
+        <activity
             android:name=".Test2"
             android:exported="true" />
         <activity

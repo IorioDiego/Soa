@@ -273,7 +273,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
                     Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
 
                     startService(new Intent(UserLogin.this, Timer.class));
-                    Intent i = new Intent(UserLogin.this, Test.class);
+                    Intent i = new Intent(UserLogin.this, Menu.class);
                     i.putExtra("token",token);
                     i.putExtra("token_refresh",tokenRefresh);
                     startActivity(i);

@@ -16,17 +16,9 @@ public class ReservaModel implements IReservas.Model {
     public void makeReservation(String client, Date date, Context c) {
         SharedPreferences preferencias= c.getSharedPreferences("reservas" + client, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
-
-
-
-
-
-            String uuid = UUID.randomUUID().toString();
-
-            editor.putString(uuid, date.toString());
-
-            editor.commit();
-
+        String uuid = UUID.randomUUID().toString();
+        editor.putString(uuid, date.toString());
+        editor.commit();
     }
 
     @Override
@@ -40,11 +32,6 @@ public class ReservaModel implements IReservas.Model {
             listDates.add(reserva.getValue().toString());
 
         }
-    /*    while(n != null){
-            listDates.add(n);
-            n = preferencias.getString("fecha", null);
-        }*/
-
         return listDates;
     }
 

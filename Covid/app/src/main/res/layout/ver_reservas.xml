@@ -27,4 +27,31 @@
         android:layout_marginBottom="20dp"
         android:id="@+id/consultaReservas"
         ></Button>
+
+    <TableLayout
+        android:id="@+id/tableReservas"
+        android:layout_width="409dp"
+        android:layout_height="594dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="68dp"
+        app:layout_constraintBottom_toBottomOf="@id/titulo"
+        >
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

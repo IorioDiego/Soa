@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.covid.ServiceHTTP_POST;
 import com.example.covid.interfaces.IPatronDesbloqueo;
 import com.example.covid.interfaces.IUserLogin;
+import com.example.covid.models.UserLoginModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,12 +17,14 @@ import org.json.JSONObject;
 public class UserLoginPresenter  implements  IUserLogin.Presenter{
 
     private IUserLogin.View view;
+    private IUserLogin.Model model;
     private static final String URI_LOGIN_USER = "http://so-unlam.net.ar/api/api/login";
     private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
 
 
         public UserLoginPresenter(IUserLogin.View view){
             this.view = view;
+            model = new UserLoginModel(this);
         }
 
         @Override
@@ -81,6 +84,17 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void registrarCantidadLogueos(Context c) {
+        model.registrarCantidadLogueos(c);
+    }
+
+    @Override
+    public String leerCantDeLogueos(Context c) {
+        return model.leerCantDeLogueos(c);
 
     }
 

@@ -14,8 +14,13 @@ public interface IUserLogin {
     interface  Presenter {
         void loguearse(String email, String pssw );
         void registrarEvento(String env, String event, String desc,String token);
+        void registrarCantidadLogueos(Context c);
+        String leerCantDeLogueos(Context c);
+    }
 
-
+    interface  Model{
+        void registrarCantidadLogueos(Context c);
+        String leerCantDeLogueos(Context c);
     }
 
 }

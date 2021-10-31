@@ -6,25 +6,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.covid.R;
-import com.example.covid.Test;
 import com.example.covid.Timer;
 import com.example.covid.UserRegister;
 import com.example.covid.interfaces.IUserLogin;
@@ -35,14 +29,16 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 
-public class UserLogin extends AppCompatActivity implements IUserLogin.View ,SensorEventListener {
+public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
     Button btnRegistro ;
     Button btnLogIn ;
+    Button btnListaLogs;
 
     private EditText txtEmail;
     private EditText txtPssw;
+    private TextView txtViewLogs;
 
     private SensorManager sensores;
 
@@ -54,7 +50,6 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
 
     public  IntentFilter filtro;
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
-    private ReceptorTimer receiverTimer = new ReceptorTimer();
     private RecpetorEvento receiverEvento = new RecpetorEvento();
     String token;
     String tokenRefresh;
@@ -66,6 +61,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         setContentView(R.layout.activity_user_login);
         presenter  = (IUserLogin.Presenter) new UserLoginPresenter(this);
 
+        txtViewLogs = (TextView) findViewById((R.id.textViewLogs));
+        String l = presenter.leerCantDeLogueos(getApplicationContext());
+        txtViewLogs.setText(l);
         txtEmail = (EditText) findViewById(R.id.editTextLoginEmail);
         txtPssw = (EditText) findViewById(R.id.editTextLoginPssw);
 
@@ -74,9 +72,13 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
 
         btnLogIn = (Button) findViewById(R.id.buttonLogIn);
         btnLogIn.setOnClickListener(HandlerBtnLogIn);
+
+        btnListaLogs = (Button) findViewById(R.id.btnListaLog);
+        btnListaLogs.setOnClickListener(HandlerBtnListar);
+
         sensores = (SensorManager) getSystemService(SENSOR_SERVICE);
         configurarBroadcastReciever();
-       // configurarBroadcastRecieverTimer();
+
         configurarBroadcastRecieverPostEvento();
 
 
@@ -95,11 +97,8 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-            // Si hay conexión a Internet en este momento
-            Toast.makeText(getApplicationContext(),"BUENA conexion de la red",Toast.LENGTH_SHORT).show();
-            int i;
-        } else {
+        if (networkInfo == null || !networkInfo.isConnected()) {
+
             Toast.makeText(getApplicationContext(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
         }
 
@@ -108,74 +107,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
 
     }
 
-    protected void Ini_Sensores()
-    {
-        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
-        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY),   SensorManager.SENSOR_DELAY_NORMAL);
 
-    }
-
-    // Metodo para parar la escucha de los sensores
-    private void Parar_Sensores()
-    {
-
-        sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
-        sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY));
-
-    }
-
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy)
-    {
-
-    }
-
-    // Metodo que escucha el cambio de los sensores
-    @Override
-    public void onSensorChanged(SensorEvent event)
-    {
-        String txt = "";
-
-        // Cada sensor puede lanzar un thread que pase por aqui
-        // Para asegurarnos ante los accesos simult�neos sincronizamos esto
-
-       synchronized (this)
-        {
-            Log.d("sensor", event.sensor.getName());
-
-            switch(event.sensor.getType())
-            {
-                case Sensor.TYPE_ACCELEROMETER :
-                    txt += "Acelerometro:\n";
-                    txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2 \n";
-                    txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2 \n";
-                    txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
-
-
-                    if ((Math.abs(event.values[0]) > 30) || (Math.abs(event.values[1]) > 30) || (Math.abs(event.values[2]) > 30))
-                    {
-                        Toast.makeText(getApplicationContext(), "SE MOVIOOOOO", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-
-                case Sensor.TYPE_PROXIMITY :
-                    txt += "Proximidad:\n";
-                    txt += event.values[0] + "\n";
-
-                   ;
-
-                    // Si detecta 0 lo represento
-                    if( event.values[0]  < event.sensor.getMaximumRange() )
-                    {
-                        float e = event.sensor.getMaximumRange();
-                        Toast.makeText(getApplicationContext(), "ME CIERRO", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-
-            }
-        }
-    }
 
 
     private void configurarBroadcastRecieverPostEvento() {
@@ -185,11 +117,6 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
     }
 
 
-    private void configurarBroadcastRecieverTimer() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.TIMER_ACT");
-        filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverTimer,filtro);
-    }
 
     private void configurarBroadcastReciever() {
         filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_OPERACION");
@@ -201,7 +128,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(UserLogin.this, UserRegister.class);
-            stopService(new Intent(UserLogin.this, Timer.class));
+          //  stopService(new Intent(UserLogin.this, Timer.class));
             startActivity(intent);
         }
     };
@@ -212,6 +139,16 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
 
             presenter.loguearse(txtEmail.getText().toString(),txtPssw.getText().toString());
            // Intent intent = new Intent(UserLogin.this, UserRegister.class);
+        }
+    };
+
+    private View.OnClickListener HandlerBtnListar = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+            Intent i = new Intent(UserLogin.this, ListaLogsView.class);
+            startActivity(i);
         }
     };
 
@@ -287,8 +224,8 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
                 if(resultadoRequest == "true"){
 
                     Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
-
-                    startService(new Intent(UserLogin.this, Timer.class));
+                    presenter.registrarCantidadLogueos(getApplicationContext());
+                  //  startService(new Intent(UserLogin.this, Timer.class));
                     Intent i = new Intent(UserLogin.this, Menu.class);
                     i.putExtra("token",token);
                     i.putExtra("token_refresh",tokenRefresh);
@@ -314,67 +251,44 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View ,Sen
 
 
 
-    public class ReceptorTimer extends BroadcastReceiver
-    {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-                String finTimer  = intent.getStringExtra("Fin");
-            Toast.makeText(getApplicationContext(),"Se termino el tiempo",Toast.LENGTH_SHORT).show();
-
-
-
-            //cierra el servicio ya que no es necesario mantenerlo, sera creado al pulsar el boton nuevamente
-            stopService(new Intent(UserLogin.this, Timer.class));
-
-            startService(new Intent(UserLogin.this, Timer.class));
-
-
-        }
-    }
-
-
     @Override
     protected void onStop()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
-
-        Parar_Sensores();
+    {
 
         super.onStop();
     }
 
     @Override
     protected void onDestroy()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
-        Parar_Sensores();
+    {
 
         super.onDestroy();
     }
 
     @Override
     protected void onPause()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
-        Parar_Sensores();
+    {
 
         super.onPause();
     }
 
     @Override
     protected void onRestart()
-    {//Actualizar token y reempezar timer
-        Ini_Sensores();
+    {
+        String l = presenter.leerCantDeLogueos(getApplicationContext());
+        txtViewLogs.setText(l);
 
         super.onRestart();
     }
 
     @Override
     protected void onResume()
-    {//Actualizar token y reempezar timer
+    {   String l = presenter.leerCantDeLogueos(getApplicationContext());
+        txtViewLogs.setText(l);
         super.onResume();
 
-        Ini_Sensores();
-    }
 
+    }
 
 
 

@@ -70,4 +70,33 @@
         android:inputType="textPersonName"
         android:text="12345678" />
 
+    <TextView
+        android:id="@+id/textViewLogs"
+        android:layout_width="79dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="28dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="137dp"
+        android:text="Cantidad de Inicios de Sesión del día" />
+
+    <Button
+        android:id="@+id/btnListaLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="46dp"
+        android:text="Ver Logs" />
+
 </RelativeLayout>

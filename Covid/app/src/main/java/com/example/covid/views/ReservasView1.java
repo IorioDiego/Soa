@@ -102,12 +102,16 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     protected void Ini_Sensores()
     {
         sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
+        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY),   SensorManager.SENSOR_DELAY_NORMAL);
+
+
     }
 
     // Metodo para parar la escucha de los sensores
     private void Parar_Sensores()
     {
         sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+        sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY));
     }
 
     public CalendarView.OnDateChangeListener handleDateChanged = new CalendarView.OnDateChangeListener(){
@@ -140,6 +144,23 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
                         presenter.RegistrarCantidadShakes(getApplicationContext(),userTxt);
                     }
                     break;
+
+                case Sensor.TYPE_PROXIMITY :
+                    txt += "Proximidad:\n";
+                    txt += event.values[0] + "\n";
+
+                    ;
+
+                    // Si detecta 0 lo represento
+                    if( event.values[0]  <= 1)
+                    {
+                        float e = event.sensor.getMaximumRange();
+                        Toast.makeText(getApplicationContext(), "ME CIERRO", Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                    }
+                    break;
+
+
             }
         }
     }

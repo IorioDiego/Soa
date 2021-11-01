@@ -53,11 +53,6 @@
             android:name=".ServiceHTTP_POST"
             android:enabled="true"
             android:label="ServicesHttp GET" />
-        <service
-            android:name=".Timer"
-            android:enabled="true"
-            android:label="TIMER"
-            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>

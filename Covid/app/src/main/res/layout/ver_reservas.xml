@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,35 +7,35 @@
     tools:context=".views.VerReservasView">
 
     <TextView
+        android:id="@+id/titulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="55dp"
         android:text="Ver reservas"
-        android:textSize="50sp"
-        android:id="@+id/titulo"
-        ></TextView>
+        android:textSize="50sp"></TextView>
 
     <Button
+        android:id="@+id/consultaReservas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Consultar"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/consultaReservas"
-        ></Button>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="158dp"
+        android:layout_marginTop="653dp"
+        android:text="Consultar"></Button>
 
     <TableLayout
         android:id="@+id/tableReservas"
-        android:layout_width="409dp"
-        android:layout_height="594dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="68dp"
-        app:layout_constraintBottom_toBottomOf="@id/titulo"
-        >
+        android:layout_width="372dp"
+        android:layout_height="36dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="107dp"
+        android:layout_marginEnd="10dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -54,4 +54,14 @@
             android:layout_height="match_parent" />
     </TableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ListView
+        android:id="@+id/listViewReservas"
+        android:layout_width="333dp"
+        android:layout_height="446dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="148dp" />
+
+</RelativeLayout>

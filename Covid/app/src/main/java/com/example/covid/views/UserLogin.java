@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.covid.R;
-import com.example.covid.Timer;
+
 import com.example.covid.UserRegister;
 import com.example.covid.interfaces.IUserLogin;
 import com.example.covid.presenters.UserLoginPresenter;
@@ -42,7 +42,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     private SensorManager sensores;
 
-    DecimalFormat dosdecimales = new DecimalFormat("###.###");
+
 
 
 
@@ -93,18 +93,6 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         Toast.makeText(getApplicationContext(),"Nivel de bateria: " + batteryPct + "%",Toast.LENGTH_SHORT).show();
         // chequeo bateria*/
 
-        //cheqoe internet
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        if (networkInfo == null || !networkInfo.isConnected()) {
-
-            Toast.makeText(getApplicationContext(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
-        }
-
-        //
-
-
     }
 
 
@@ -128,7 +116,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(UserLogin.this, UserRegister.class);
-          //  stopService(new Intent(UserLogin.this, Timer.class));
+
             startActivity(intent);
         }
     };
@@ -138,14 +126,13 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         public void onClick(View v) {
 
             presenter.loguearse(txtEmail.getText().toString(),txtPssw.getText().toString());
-           // Intent intent = new Intent(UserLogin.this, UserRegister.class);
+
         }
     };
 
     private View.OnClickListener HandlerBtnListar = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
 
             Intent i = new Intent(UserLogin.this, ListaLogsView.class);
             startActivity(i);
@@ -225,7 +212,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
                     Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
                     presenter.registrarCantidadLogueos(getApplicationContext());
-                  //  startService(new Intent(UserLogin.this, Timer.class));
+
                     Intent i = new Intent(UserLogin.this, Menu.class);
                     i.putExtra("token",token);
                     i.putExtra("token_refresh",tokenRefresh);

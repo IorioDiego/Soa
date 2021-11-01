@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.covid.R;
-import com.example.covid.Timer;
 import com.example.covid.interfaces.IMenu;
 
 import org.json.JSONException;
@@ -24,10 +23,10 @@ public class Menu extends AppCompatActivity implements IMenu.View {
     private  String token;
     private String token_refresh;
     private IMenu.Presenter presenter;
-    private  String nomrbeReceiverTimer="TIMER_ACT_MENU";
+
     String userTxt;
     Button reservar, verReservas;
-    private ReceptorTimer receiverTimer = new ReceptorTimer();
+
     private ReceptorActualizacion receiverRefresh= new ReceptorActualizacion();
     public IntentFilter filtro;
 
@@ -50,10 +49,6 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         verReservas.setOnClickListener(handleBtnVerReservas);
 
 
-
-        //la idea es q aca se inicie y despues cuando se para la app se frene y actualice
-     //   configurarBroadcastRecieverTimer();
-        startService(new Intent(Menu.this, Timer.class));
 
     }
 
@@ -78,30 +73,7 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         }
     };
 
-    private void configurarBroadcastRecieverTimer() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.TIMER_ACT");
-        filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverTimer,filtro);
-    }
 
-    public class ReceptorTimer extends BroadcastReceiver
-    {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String finTimer  = intent.getStringExtra("Fin");
-            Toast.makeText(getApplicationContext(),"Se termino el tiempo",Toast.LENGTH_SHORT).show();
-
-
-
-            //cierra el servicio ya que no es necesario mantenerlo, sera creado al pulsar el boton nuevamente
-            stopService(new Intent(Menu.this, Timer.class));
-
-            startService(new Intent(Menu.this, Timer.class));
-
-
-        }
-    }
 
     private void configurarBroadcastRecieverRefresh() {
         filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_PUT");
@@ -133,15 +105,6 @@ public class Menu extends AppCompatActivity implements IMenu.View {
                 e.printStackTrace();
             }
 
-
-
-
-            //cierra el servicio ya que no es necesario mantenerlo, sera creado al pulsar el boton nuevamente
-            stopService(new Intent(Menu.this, Timer.class));
-
-            startService(new Intent(Menu.this, Timer.class));
-
-
         }
     }
 
@@ -160,7 +123,7 @@ public class Menu extends AppCompatActivity implements IMenu.View {
     @Override
     protected void onDestroy()
     {
-        //unregisterReceiver(receiverTimer);
+
 
 
         super.onDestroy();
@@ -168,14 +131,14 @@ public class Menu extends AppCompatActivity implements IMenu.View {
 
     @Override
     protected void onPause()
-    {unregisterReceiver(receiverTimer);
+    {
 
         super.onPause();
     }
 
     @Override
     protected void onRestart()
-    {//Actualizar token y reempezar timer
+    {
 
 
         super.onRestart();
@@ -183,8 +146,7 @@ public class Menu extends AppCompatActivity implements IMenu.View {
 
     @Override
     protected void onResume()
-    {//Actualizar token y reempezar timer
-        configurarBroadcastRecieverTimer();
+    {
 
         super.onResume();
 

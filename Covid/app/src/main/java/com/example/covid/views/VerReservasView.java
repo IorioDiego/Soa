@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -20,6 +22,10 @@ import com.example.covid.presenters.VerReservasPresenter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class VerReservasView extends AppCompatActivity implements IVerReservas.View {
@@ -31,6 +37,10 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     private Thread threadVerReservas = null;
     TableLayout table;
     String userTxt;
+    private   ListView listViewReservas;
+
+        private ArrayAdapter<String> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +50,14 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
         presenter  = (IVerReservas.Presenter) new VerReservasPresenter(this);
         verReservas = (Button) findViewById(R.id.consultaReservas);
         verReservas.setOnClickListener(handleBtnVerReservas);
+        listViewReservas= findViewById(R.id.listViewReservas);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         userTxt = extras.getString("user");
+
+
+
     }
 
     @Override
@@ -59,14 +73,28 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     private View.OnClickListener handleBtnVerReservas = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            List<String> reservas = presenter.verReservas(userTxt);
+            List<String> reservas = presenter.verReservas(userTxt,getApplicationContext());
+
+            List<String> listaNueva = new ArrayList<String>();
             for (String n: reservas) {
+
+                String[] partesFecha = n.split(" ");
+                String nuevaFecha=partesFecha[0]+" "+ partesFecha[1]+ " " + partesFecha[2] + " " + partesFecha[3];
+                listaNueva.add(nuevaFecha);
+            }
+            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaNueva);
+            listViewReservas.setAdapter(adapter);
+     /*       for (String n: reservas) {
                 {
+
+
+
+
                     TableRow row=new TableRow(table.getContext());
                     TextView tv1=new TextView(table.getContext());
                     TextView tv2=new TextView(table.getContext());
                     tv1.setText("Fecha: ");
-                    tv2.setText(n);
+                    tv2.setText(nuevaFecha);
                     row.addView(tv1);
                     row.addView(tv2);
                     table.addView(row);
@@ -74,7 +102,7 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
 
                     Toast.makeText(getContexto(), n, Toast.LENGTH_SHORT);
                 }
-            }
+            }*/
         }
     };
 
@@ -82,8 +110,7 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     protected void onStop()
     {
 
-        if(threadVerReservas != null)
-            this.threadVerReservas.interrupt();
+
 
         super.onStop();
     }
@@ -91,8 +118,7 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     @Override
     protected void onDestroy()
     {
-        if(threadVerReservas != null)
-            this.threadVerReservas.interrupt();
+
         super.onDestroy();
     }
 

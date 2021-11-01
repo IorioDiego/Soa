@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.covid.ServiceHTTP_POST;
+import com.example.covid.interfaces.IReservas;
 import com.example.covid.interfaces.IVerReservas;
 import com.example.covid.models.ReservaModel;
 
@@ -22,7 +23,7 @@ public class VerReservasPresenter implements IVerReservas.Presenter {
     private ReservaModel model;
     public VerReservasPresenter(IVerReservas.View view){
         this.view = view;
-        model = new ReservaModel();
+        model = new ReservaModel((IReservas.Presenter) this);
     }
 
     @Override

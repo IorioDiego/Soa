@@ -33,11 +33,7 @@ public class ListaLogsView extends AppCompatActivity implements  IListaLogs.View
         presenter = new ListaLogsPresenter(this);
 
         logList =findViewById(R.id.logList);
-//        list.add("HOLA");
-//        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_2,list);
-//        logList.setAdapter(adapter) ;
         HashMap<String,String> logMap = (HashMap<String, String>) presenter.leerCantDeLogueos(getApplicationContext());
-
         MyAdapter adapter = new MyAdapter(logMap);
         logList.setAdapter(adapter);
 

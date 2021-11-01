@@ -25,6 +25,8 @@ public class ServiceHTTP_POST extends IntentService {
 
     private URL mUrl;
     String token;
+    String token_refresh;
+    Integer code=0;
     private  Exception mExeption = null;
 
     public ServiceHTTP_POST(){
@@ -48,6 +50,7 @@ public class ServiceHTTP_POST extends IntentService {
             JSONObject datosJson = new JSONObject(intent.getExtras().getString("datosJson"));
             if(evento.equals("RegistrarEvento")){
                 token = intent.getExtras().getString("tokenEvento");
+                token_refresh   = intent.getExtras().getString("token_refresh");
             }
 
 
@@ -96,6 +99,9 @@ public class ServiceHTTP_POST extends IntentService {
 
             Intent i = new  Intent("com.example.intentservice.intent.action.POST_EVENTO");
             i.putExtra("datosJson",result);
+            if(code == HttpURLConnection.HTTP_CLIENT_TIMEOUT){
+                i.putExtra("timeout",code);
+            }
             sendBroadcast(i);
         }
 
@@ -124,7 +130,7 @@ public class ServiceHTTP_POST extends IntentService {
 
             urlConnection.connect();
 
-            int responseCode = urlConnection.getResponseCode();
+            Integer responseCode = urlConnection.getResponseCode();
             if( ( responseCode == HttpURLConnection.HTTP_OK ) || (responseCode == HttpURLConnection.HTTP_CREATED)){
                 InputStreamReader inputStream  = new InputStreamReader(urlConnection.getInputStream());
                 result  = convertInputStreamToString(inputStream).toString();
@@ -132,7 +138,12 @@ public class ServiceHTTP_POST extends IntentService {
 
                 InputStreamReader inputStream  = new InputStreamReader(urlConnection.getErrorStream());
                 result  = convertInputStreamToString(inputStream).toString();
-            }else{
+            }else if(responseCode == HttpURLConnection.HTTP_CLIENT_TIMEOUT){
+                InputStreamReader inputStream  = new InputStreamReader(urlConnection.getErrorStream());
+                result  = convertInputStreamToString(inputStream).toString();
+                code = responseCode;
+            }
+            else{
                 result= "NO OK";
             }
             mExeption = null;

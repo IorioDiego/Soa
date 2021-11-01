@@ -192,7 +192,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
                     token  =datosJson.getString("token");
                     tokenRefresh = datosJson.getString("token_refresh");
 
-                    presenter.registrarEvento("TEST","EVENTO_LOGUEO","El usuario se logueo en el sistema",token);
+                    presenter.registrarEvento("TEST","EVENTO_LOGUEO","El usuario se logueo en el sistema",token,tokenRefresh);
                 }
 
 

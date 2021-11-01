@@ -63,7 +63,7 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
         }
 
     @Override
-    public void registrarEvento(String env, String event, String desc, String token) {
+    public void registrarEvento(String env, String event, String desc, String token,String token_refresh) {
 
         JSONObject obj = new JSONObject();
         try {
@@ -78,6 +78,7 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
             i.putExtra("uri",URI_REGISTER_EVENT);
             i.putExtra("datosJson",obj.toString());
             i.putExtra("tokenEvento",token);
+            i.putExtra("token_refresh",token_refresh);
 
             ((Context) view).startService(i);
 

@@ -2,8 +2,10 @@ package com.example.covid.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,6 +21,10 @@ import com.example.covid.R;
 import com.example.covid.interfaces.IReservas;
 import com.example.covid.presenters.ReservasPresenter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,11 +34,19 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
     private IReservas.Presenter presenter;
     private Button reservarButton;
+    private Button listShakeButton;
     private CalendarView calendarView;
     private Date currentDate;
     private String userTxt;
     private SensorManager sensores;
+    private  String token;
+    private String token_refresh;
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
+    private static final String ENV = "TEST";
+    public  IntentFilter filtro;
+    private RecepetorEvento receiverEvento = new RecepetorEvento();
+    private RecepetorRefresh receiverRefresh= new RecepetorRefresh();
+
 
 
     @Override
@@ -42,16 +56,24 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         presenter  = (IReservas.Presenter) new ReservasPresenter(this);
         calendarView = (CalendarView) findViewById(R.id.calendarReserva);
         reservarButton = (Button) findViewById(R.id.reservarButton);
+        listShakeButton = (Button) findViewById(R.id.btnShakeList);
 
         calendarView.setOnDateChangeListener(handleDateChanged);
         reservarButton.setOnClickListener(handleBtnReservar);
+        listShakeButton.setOnClickListener(handleBtnShakeList);
         sensores = (SensorManager) getSystemService(SENSOR_SERVICE);
         SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd");
         currentDate = new Date();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+
+
         userTxt = extras.getString("user");
+        token = extras.getString("token");
+        token_refresh = extras.getString("token_refresh");
+        configurarBroadcastRecieverPostEvento();
+        configurarBroadcastRecieverRefresh();
         Ini_Sensores();
     }
 
@@ -59,6 +81,20 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         @Override
         public void onClick(View v) {
             presenter.reservar(currentDate, userTxt);
+            presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
+
+        }
+    };
+
+    private View.OnClickListener handleBtnShakeList = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+            Intent in = new Intent(ReservasView1.this, ListaShake.class);
+            in.putExtra("user",userTxt.toString());
+            startActivity(in);
+
         }
     };
 
@@ -95,22 +131,80 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             switch(event.sensor.getType())
             {
                 case Sensor.TYPE_ACCELEROMETER :
-                    txt += "Acelerometro:\n";
-                    txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2 \n";
-                    txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2 \n";
-                    txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
+
 
                     if ((Math.abs(event.values[0]) > 30) || (Math.abs(event.values[1]) > 30) || (Math.abs(event.values[2]) > 30)) {
                         Toast.makeText(getContexto(), "Reservo", Toast.LENGTH_SHORT).show();
                         presenter.reservar(currentDate, userTxt);
-
+                        presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
+                        presenter.RegistrarCantidadShakes(getApplicationContext(),userTxt);
                     }
                     break;
             }
         }
     }
 
-    @Override
+    private void configurarBroadcastRecieverPostEvento() {
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.POST_EVENTO");
+        filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiverEvento,filtro);
+    }
+
+    public class RecepetorEvento extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            try {
+                String datosJsonString = intent.getStringExtra("datosJson");
+
+                JSONObject datosJson = new JSONObject(datosJsonString);
+                String resultadoRequest = datosJson.getString("success");
+
+                if (resultadoRequest == "false") {
+
+                    String code = intent.getStringExtra("timeout");
+
+                    if (Integer.parseInt(code) == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
+                        presenter.actulizarToken(token_refresh);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
+    private void configurarBroadcastRecieverRefresh() {
+        filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_PUT");
+        filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(receiverRefresh,filtro);
+    }
+
+    public class RecepetorRefresh extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            try {
+                String datosJsonString = intent.getStringExtra("refresh");
+                JSONObject datosJson = new JSONObject(datosJsonString);
+                token  = datosJson.getString("success");
+                token_refresh = datosJson.getString("token");
+                token_refresh = datosJson.getString("token_refresh");
+                presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        }
+            @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }

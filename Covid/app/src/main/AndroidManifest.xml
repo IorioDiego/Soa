@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Covid"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".views.ListaShake"
+            android:exported="true" />
+        <activity
             android:name=".views.ListaLogsView"
             android:exported="true" />
         <activity
@@ -26,12 +29,6 @@
             android:exported="true" />
         <activity
             android:name=".views.Menu"
-            android:exported="true" />
-        <activity
-            android:name=".Test2"
-            android:exported="true" />
-        <activity
-            android:name=".Test"
             android:exported="true" />
         <activity
             android:name=".views.ConfirmarPatronView"

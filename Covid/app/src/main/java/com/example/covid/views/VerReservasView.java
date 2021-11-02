@@ -59,15 +59,7 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
 
     }
 
-    @Override
-    public Context getContexto() {
-        return getApplicationContext();
-    }
 
-    @Override
-    public Object getSystemService() {
-        return null;
-    }
 
     private View.OnClickListener handleBtnVerReservas = new View.OnClickListener() {
         @Override

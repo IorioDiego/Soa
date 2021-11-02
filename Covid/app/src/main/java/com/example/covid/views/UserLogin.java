@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.covid.R;
 
+import com.example.covid.ServiceHTTP_POST;
 import com.example.covid.UserRegister;
 import com.example.covid.interfaces.IUserLogin;
 import com.example.covid.presenters.UserLoginPresenter;
@@ -32,8 +33,8 @@ import java.text.DecimalFormat;
 public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
-    Button btnRegistro ;
-    Button btnLogIn ;
+    Button btnRegistro;
+    Button btnLogIn;
     Button btnListaLogs;
 
     private EditText txtEmail;
@@ -43,12 +44,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     private SensorManager sensores;
 
 
-
-
-
     private IUserLogin.Presenter presenter;
 
-    public  IntentFilter filtro;
+    public IntentFilter filtro;
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
     private RecpetorEvento receiverEvento = new RecpetorEvento();
     String token;
@@ -59,7 +57,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
-        presenter  = (IUserLogin.Presenter) new UserLoginPresenter(this);
+        presenter = (IUserLogin.Presenter) new UserLoginPresenter(this);
 
         txtViewLogs = (TextView) findViewById((R.id.textViewLogs));
         String l = presenter.leerCantDeLogueos(getApplicationContext());
@@ -82,34 +80,31 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         configurarBroadcastRecieverPostEvento();
 
 
-       //Chequeo bateria
+        //Chequeo bateria
         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         Intent batteryStatus = this.registerReceiver(null, ifilter);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
-        int batteryPct = level * 100 /scale;
+        int batteryPct = level * 100 / scale;
 
-        Toast.makeText(getApplicationContext(),"Nivel de bateria: " + batteryPct + "%",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Nivel de bateria: " + batteryPct + "%", Toast.LENGTH_SHORT).show();
         // chequeo bateria*/
 
     }
 
 
-
-
     private void configurarBroadcastRecieverPostEvento() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.POST_EVENTO");
+        filtro = new IntentFilter("com.example.intentservice.intent.action.POST_EVENTO");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverEvento,filtro);
+        registerReceiver(receiverEvento, filtro);
     }
 
 
-
     private void configurarBroadcastReciever() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverReg,filtro);
+        registerReceiver(receiverReg, filtro);
     }
 
     private View.OnClickListener HandlerBtnRegistro = new View.OnClickListener() {
@@ -125,7 +120,14 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         @Override
         public void onClick(View v) {
 
-            presenter.loguearse(txtEmail.getText().toString(),txtPssw.getText().toString());
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected()) {
+                presenter.loguearse(txtEmail.getText().toString(), txtPssw.getText().toString());
+            } else {
+                Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+            }
 
         }
     };
@@ -134,55 +136,32 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         @Override
         public void onClick(View v) {
 
+
             Intent i = new Intent(UserLogin.this, ListaLogsView.class);
             startActivity(i);
+
+
         }
     };
 
 
-
-    @Override
-    public Context getContexto() {
-        return  getApplicationContext();
-    }
-
-    @Override
-    public Object getSystemService() {
-        return  getSystemService(Context.CONNECTIVITY_SERVICE);
-    }
-
-
-
-    public class ReceptorOperacion extends BroadcastReceiver
-    {
+    public class ReceptorOperacion extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
 
             try {
-                String datosJsonString  = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra("datosJson");
                 JSONObject datosJson = new JSONObject(datosJsonString);
-
-                Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
-
-                //txtResultado.setText(datosJsonString);
-                Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
-
-//                String token  =datosJson.getString("token");
-//                Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
-
+                //Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
                 String resultadoRequest = datosJson.getString("success");
 
-
-                if(resultadoRequest.equals("true")){
-                    token  =datosJson.getString("token");
+                if (resultadoRequest.equals("true")) {
+                    token = datosJson.getString("token");
                     tokenRefresh = datosJson.getString("token_refresh");
-
-                    presenter.registrarEvento("TEST","EVENTO_LOGUEO","El usuario se logueo en el sistema",token,tokenRefresh);
+                    presenter.registrarEvento("TEST", "EVENTO_LOGUEO", "El usuario se logueo en el sistema", token, tokenRefresh);
                 }
-
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -191,42 +170,38 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         }
     }
 
-    public class RecpetorEvento extends BroadcastReceiver
-    {
+    public class RecpetorEvento extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
 
 
             try {
-                String datosJsonString  = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra("datosJson");
                 JSONObject datosJson = new JSONObject(datosJsonString);
 
-                Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
+                Log.i("LOGUEO_MAIN", "Datos Json Main Thread" + datosJsonString);
 
                 //txtResultado.setText(datosJsonString);
-                Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
+
                 String resultadoRequest = datosJson.getString("success");
 
-                if(resultadoRequest == "true"){
+                if (resultadoRequest == "true") {
 
-                    Log.i("LOGUEO_MAIN","TOKEN MAIN TRHEAD"+ token);
+                    Log.i("LOGUEO_MAIN", "TOKEN MAIN TRHEAD" + token);
                     presenter.registrarCantidadLogueos(getApplicationContext());
 
                     Intent i = new Intent(UserLogin.this, Menu.class);
-                    i.putExtra("token",token);
-                    i.putExtra("token_refresh",tokenRefresh);
+                    i.putExtra("token", token);
+                    i.putExtra("token_refresh", tokenRefresh);
                     i.putExtra("user", txtEmail.getText().toString());
                     startActivity(i);
 
-                }else
-                {
-                    String msg  =datosJson.getString("msg");
+                } else {
+                    String msg = datosJson.getString("msg");
                     Log.i("LOGUEO_MAIN", msg);
-                    Toast.makeText(getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }
-
-
 
 
             } catch (JSONException e) {
@@ -237,46 +212,43 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        Intent in = new Intent(Intent.ACTION_MAIN);
+        in.addCategory(in.CATEGORY_HOME);
+        startActivity(in);
+    }
 
     @Override
-    protected void onStop()
-    {
-
+    protected void onStop() {
         super.onStop();
     }
 
     @Override
-    protected void onDestroy()
-    {
-
+    protected void onDestroy() {
+        unregisterReceiver(receiverEvento);
+        unregisterReceiver(receiverReg);
+        stopService(new Intent(this, ServiceHTTP_POST.class));
         super.onDestroy();
     }
 
     @Override
-    protected void onPause()
-    {
-
+    protected void onPause() {
         super.onPause();
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         String l = presenter.leerCantDeLogueos(getApplicationContext());
         txtViewLogs.setText(l);
-
         super.onRestart();
     }
 
     @Override
-    protected void onResume()
-    {   String l = presenter.leerCantDeLogueos(getApplicationContext());
+    protected void onResume() {
+        String l = presenter.leerCantDeLogueos(getApplicationContext());
         txtViewLogs.setText(l);
         super.onResume();
-
-
     }
-
-
 
 }

@@ -15,18 +15,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserRegisterPresenter  implements IUserRegister.Presenter {
+public class UserRegisterPresenter implements IUserRegister.Presenter {
 
     private IUserRegister.View view;
     private IUserRegister.Model model;
     private static final String URI_REGISTER_USER = "http://so-unlam.net.ar/api/api/register";
     private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
-   // public IntentFilter filtro;
-  //  private ReceptorOperacion receiverReg = new ReceptorOperacion();
+    // public IntentFilter filtro;
+    //  private ReceptorOperacion receiverReg = new ReceptorOperacion();
 
-   public UserRegisterPresenter(IUserRegister.View  view){
-       this.view = view;
-   }
+    public UserRegisterPresenter(IUserRegister.View view) {
+        this.view = view;
+    }
 
   /*  @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,10 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
                 obj.put("commission", com);
                 obj.put("group", group);//Integer.parseInt(txtGroup.getText().toString())
 
-                Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
-                i.putExtra("evento","log");
-                i.putExtra("uri",URI_REGISTER_USER);
-                i.putExtra("datosJson",obj.toString());
+                Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
+                i.putExtra("evento", "log");
+                i.putExtra("uri", URI_REGISTER_USER);
+                i.putExtra("datosJson", obj.toString());
 
                 ((Context) view).startService(i);
 
@@ -65,13 +65,11 @@ public class UserRegisterPresenter  implements IUserRegister.Presenter {
                 e.printStackTrace();
             }
 
-        }else
-        {
+        } else {
 
-            Toast.makeText(view.getContexto(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContexto(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
 
         }
-
 
 
     }

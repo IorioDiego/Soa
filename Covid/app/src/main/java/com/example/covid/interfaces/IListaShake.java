@@ -7,18 +7,18 @@ import java.util.Map;
 public interface IListaShake {
 
 
-    interface View{
+    interface View {
 
     }
 
-    interface  Presenter {
+    interface Presenter {
 
-        Map<String,String> leerCantDeShakes(Context c,String user);
+        Map<String, String> leerCantDeShakes(Context c, String user);
     }
 
-    interface  Model{
+    interface Model {
 
-        Map<String,String> leerCantDeShakes(Context c,String user);
+        Map<String, String> leerCantDeShakes(Context c, String user);
     }
 
 }

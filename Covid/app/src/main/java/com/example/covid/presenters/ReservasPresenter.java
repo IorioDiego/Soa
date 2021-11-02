@@ -22,74 +22,68 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class ReservasPresenter implements IReservas.Presenter{
+public class ReservasPresenter implements IReservas.Presenter {
     private IReservas.View view;
     private ReservaModel model;
     private static final String URI_LOGIN_USER = "http://so-unlam.net.ar/api/api/login";
     private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
-    private static final String URI_REFRESH=  "http://so-unlam.net.ar/api/api/refresh";
+    private static final String URI_REFRESH = "http://so-unlam.net.ar/api/api/refresh";
 
 
-
-    public ReservasPresenter(IReservas.View view){
+    public ReservasPresenter(IReservas.View view) {
         this.view = view;
         model = new ReservaModel(this);
     }
 
     @Override
-    public void reservar(Date fechaSeleccionada, String cliente) {
+    public void reservar(Date fechaSeleccionada, String cliente, Context c) {
 
-        model.makeReservation(cliente, fechaSeleccionada, view.getContexto());
+        model.makeReservation(cliente, fechaSeleccionada, c);
     }
 
     @Override
     public void postearReserva(String env, String event, String desc, String token, String token_refresh) {
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) view.getSystemService();
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-            JSONObject obj = new JSONObject();
-            try {
+        JSONObject obj = new JSONObject();
+        try {
 
-                obj.put("env", env);
-                obj.put("type_events", event);
-                obj.put("description", desc);
+            obj.put("env", env);
+            obj.put("type_events", event);
+            obj.put("description", desc);
 
 
-                Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
-                i.putExtra("evento", "RegistrarEvento");
-                i.putExtra("uri", URI_REGISTER_EVENT);
-                i.putExtra("datosJson", obj.toString());
-                i.putExtra("tokenEvento", token);
-                i.putExtra("token_refresh", token_refresh);
+            Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
+            i.putExtra("evento", "RegistrarEvento");
+            i.putExtra("uri", URI_REGISTER_EVENT);
+            i.putExtra("datosJson", obj.toString());
+            i.putExtra("tokenEvento", token);
+            i.putExtra("token_refresh", token_refresh);
 
 
-                ((Context) view).startService(i);
+            ((Context) view).startService(i);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
     }
 
     @Override
     public void actulizarToken(String token_refresh) {
 
 
-            Intent i = new Intent((Context) view, ServiceHTTP_PUT.class);
-            i.putExtra("url", URI_REFRESH);
-            i.putExtra("token_refresh_put",token_refresh);
-            ((Context) view).startService(i);
+        Intent i = new Intent((Context) view, ServiceHTTP_PUT.class);
+        i.putExtra("url", URI_REFRESH);
+        i.putExtra("token_refresh_put", token_refresh);
+        ((Context) view).startService(i);
 
 
-        }
+    }
 
     @Override
-    public void RegistrarCantidadShakes(Context c,String user) {
-        model.RegistrarCantidadShakes(c,user);
+    public void RegistrarCantidadShakes(Context c, String user) {
+        model.RegistrarCantidadShakes(c, user);
     }
 
 

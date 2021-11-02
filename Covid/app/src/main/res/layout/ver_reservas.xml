@@ -2,18 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.VerReservasView">
 
     <TextView
         android:id="@+id/titulo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="55dp"
-        android:text="Ver reservas"
+        android:layout_marginEnd="0dp"
+        android:text="Historial de  Reservas"
+        android:textAlignment="center"
         android:textSize="50sp"></TextView>
 
     <Button
@@ -23,45 +26,29 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="158dp"
-        android:layout_marginTop="653dp"
+        android:layout_marginStart="136dp"
+        android:layout_marginTop="607dp"
         android:text="Consultar"></Button>
-
-    <TableLayout
-        android:id="@+id/tableReservas"
-        android:layout_width="372dp"
-        android:layout_height="36dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="107dp"
-        android:layout_marginEnd="10dp">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
 
     <ListView
         android:id="@+id/listViewReservas"
-        android:layout_width="333dp"
-        android:layout_height="446dp"
+        android:layout_width="338dp"
+        android:layout_height="401dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="148dp" />
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="180dp" />
+
+    <TextView
+        android:id="@+id/sinReservasTxtView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="148dp"
+        android:textAlignment="center"
+        android:textColor="@color/design_default_color_error" />
 
 </RelativeLayout>

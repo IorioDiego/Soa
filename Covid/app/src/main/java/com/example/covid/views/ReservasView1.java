@@ -10,6 +10,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +20,8 @@ import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.covid.R;
+import com.example.covid.ServiceHTTP_POST;
+import com.example.covid.ServiceHTTP_PUT;
 import com.example.covid.interfaces.IReservas;
 import com.example.covid.presenters.ReservasPresenter;
 
@@ -39,21 +43,20 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     private Date currentDate;
     private String userTxt;
     private SensorManager sensores;
-    private  String token;
+    private String token;
     private String token_refresh;
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
     private static final String ENV = "TEST";
-    public  IntentFilter filtro;
+    public IntentFilter filtro;
     private RecepetorEvento receiverEvento = new RecepetorEvento();
-    private RecepetorRefresh receiverRefresh= new RecepetorRefresh();
-
+    private RecepetorRefresh receiverRefresh = new RecepetorRefresh();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reservas);
-        presenter  = (IReservas.Presenter) new ReservasPresenter(this);
+        presenter = (IReservas.Presenter) new ReservasPresenter(this);
         calendarView = (CalendarView) findViewById(R.id.calendarReserva);
         reservarButton = (Button) findViewById(R.id.reservarButton);
         listShakeButton = (Button) findViewById(R.id.btnShakeList);
@@ -80,8 +83,15 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     private View.OnClickListener handleBtnReservar = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            presenter.reservar(currentDate, userTxt);
-            presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
+
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                presenter.reservar(currentDate, userTxt, getApplicationContext());
+                presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+            } else {
+                Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+            }
 
         }
     };
@@ -92,29 +102,27 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
 
             Intent in = new Intent(ReservasView1.this, ListaShake.class);
-            in.putExtra("user",userTxt.toString());
+            in.putExtra("user", userTxt.toString());
             startActivity(in);
 
         }
     };
 
 
-    protected void Ini_Sensores()
-    {
-        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),   SensorManager.SENSOR_DELAY_NORMAL);
-        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY),   SensorManager.SENSOR_DELAY_NORMAL);
+    protected void Ini_Sensores() {
+        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        sensores.registerListener(this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY), SensorManager.SENSOR_DELAY_NORMAL);
 
 
     }
 
     // Metodo para parar la escucha de los sensores
-    private void Parar_Sensores()
-    {
+    private void Parar_Sensores() {
         sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
         sensores.unregisterListener((SensorEventListener) this, sensores.getDefaultSensor(Sensor.TYPE_PROXIMITY));
     }
 
-    public CalendarView.OnDateChangeListener handleDateChanged = new CalendarView.OnDateChangeListener(){
+    public CalendarView.OnDateChangeListener handleDateChanged = new CalendarView.OnDateChangeListener() {
         @Override
         public void onSelectedDayChange(CalendarView view, int year, int month,
                                         int dayOfMonth) {
@@ -123,52 +131,38 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     };
 
     @Override
-    public void onSensorChanged(SensorEvent event)
-    {
-        String txt = "";
+    public void onSensorChanged(SensorEvent event) {
 
-
-        synchronized (this)
-        {
-            Log.d("sensor", event.sensor.getName());
-
-            switch(event.sensor.getType())
-            {
-                case Sensor.TYPE_ACCELEROMETER :
-
-
+        synchronized (this) {
+            switch (event.sensor.getType()) {
+                case Sensor.TYPE_ACCELEROMETER:
                     if ((Math.abs(event.values[0]) > 30) || (Math.abs(event.values[1]) > 30) || (Math.abs(event.values[2]) > 30)) {
-                        Toast.makeText(getContexto(), "Reservo", Toast.LENGTH_SHORT).show();
-                        presenter.reservar(currentDate, userTxt);
-                        presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
-                        presenter.RegistrarCantidadShakes(getApplicationContext(),userTxt);
+                        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                        if (networkInfo != null && networkInfo.isConnected()) {
+                            presenter.reservar(currentDate, userTxt, getApplicationContext());
+                            presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+                            presenter.RegistrarCantidadShakes(getApplicationContext(), userTxt);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                     break;
-
-                case Sensor.TYPE_PROXIMITY :
-                    txt += "Proximidad:\n";
-                    txt += event.values[0] + "\n";
-
-                    ;
-
-                    // Si detecta 0 lo represento
-                    if( event.values[0]  <= 1)
-                    {
+                case Sensor.TYPE_PROXIMITY:
+                    if (event.values[0] <= 1) {
                         float e = event.sensor.getMaximumRange();
-                        Toast.makeText(getApplicationContext(), "ME CIERRO", Toast.LENGTH_SHORT).show();
                         onBackPressed();
                     }
                     break;
-
-
             }
         }
     }
 
     private void configurarBroadcastRecieverPostEvento() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.POST_EVENTO");
+        filtro = new IntentFilter("com.example.intentservice.intent.action.POST_EVENTO");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverEvento,filtro);
+        registerReceiver(receiverEvento, filtro);
     }
 
     public class RecepetorEvento extends BroadcastReceiver {
@@ -200,9 +194,9 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
 
     private void configurarBroadcastRecieverRefresh() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_PUT");
+        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_PUT");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverRefresh,filtro);
+        registerReceiver(receiverRefresh, filtro);
     }
 
     public class RecepetorRefresh extends BroadcastReceiver {
@@ -213,10 +207,10 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             try {
                 String datosJsonString = intent.getStringExtra("refresh");
                 JSONObject datosJson = new JSONObject(datosJsonString);
-                token  = datosJson.getString("success");
+                token = datosJson.getString("success");
                 token_refresh = datosJson.getString("token");
                 token_refresh = datosJson.getString("token_refresh");
-                presenter.postearReserva(ENV,"EVENTO_RESERVA","El usuario hizo una reserva para "+currentDate.toString() ,token,token_refresh);
+                presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
 
 
             } catch (JSONException e) {
@@ -224,25 +218,17 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             }
         }
 
-        }
-            @Override
+    }
+
+
+    @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
 
-    @Override
-    public Context getContexto() {
-        return  getApplicationContext();
-    }
 
     @Override
-    public Object getSystemService() {
-        return  getSystemService(Context.CONNECTIVITY_SERVICE);
-    }
-
-    @Override
-    protected void onStop()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
+    protected void onStop() {
 
         Parar_Sensores();
 
@@ -250,31 +236,31 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     }
 
     @Override
-    protected void onDestroy()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
+    protected void onDestroy() {
+        unregisterReceiver(receiverRefresh);
+        unregisterReceiver(receiverEvento);
+        stopService(new Intent(this, ServiceHTTP_PUT.class));
+        stopService(new Intent(this, ServiceHTTP_POST.class));
         Parar_Sensores();
         super.onDestroy();
     }
 
     @Override
-    protected void onPause()
-    {// stopService(new Intent(UserLogin.this, Timer.class));
+    protected void onPause() {
         Parar_Sensores();
 
         super.onPause();
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         Ini_Sensores();
 
         super.onRestart();
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         Ini_Sensores();

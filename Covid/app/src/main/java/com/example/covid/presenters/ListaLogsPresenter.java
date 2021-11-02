@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class ListaLogsPresenter implements IListaLogs.Presenter {
 
-    private  IListaLogs.View view;
-    private  IListaLogs.Model model;
+    private IListaLogs.View view;
+    private IListaLogs.Model model;
 
-    public ListaLogsPresenter(IListaLogs.View view){
+    public ListaLogsPresenter(IListaLogs.View view) {
         this.view = view;
-        model =  new ListaLogsModel(this);
+        model = new ListaLogsModel(this);
     }
 
 

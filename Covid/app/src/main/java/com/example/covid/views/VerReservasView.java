@@ -37,26 +37,25 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     private Thread threadVerReservas = null;
     TableLayout table;
     String userTxt;
-    private   ListView listViewReservas;
+    private TextView sinReservasTxt;
+    private ListView listViewReservas;
 
-        private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ver_reservas);
 
-        table = (TableLayout) findViewById(R.id.tableReservas);
-        presenter  = (IVerReservas.Presenter) new VerReservasPresenter(this);
+
+        presenter = (IVerReservas.Presenter) new VerReservasPresenter(this);
         verReservas = (Button) findViewById(R.id.consultaReservas);
         verReservas.setOnClickListener(handleBtnVerReservas);
-        listViewReservas= findViewById(R.id.listViewReservas);
-
+        listViewReservas = findViewById(R.id.listViewReservas);
+        sinReservasTxt = findViewById(R.id.sinReservasTxtView);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         userTxt = extras.getString("user");
-
-
 
     }
 
@@ -73,51 +72,35 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     private View.OnClickListener handleBtnVerReservas = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            List<String> reservas = presenter.verReservas(userTxt,getApplicationContext());
+            List<String> reservas = presenter.verReservas(userTxt, getApplicationContext());
 
             List<String> listaNueva = new ArrayList<String>();
-            for (String n: reservas) {
+            for (String n : reservas) {
 
                 String[] partesFecha = n.split(" ");
-                String nuevaFecha=partesFecha[0]+" "+ partesFecha[1]+ " " + partesFecha[2] + " " + partesFecha[3];
+                String nuevaFecha = partesFecha[0] + " " + partesFecha[1] + " " + partesFecha[2] + " " + partesFecha[3];
                 listaNueva.add(nuevaFecha);
             }
-            adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaNueva);
-            listViewReservas.setAdapter(adapter);
-     /*       for (String n: reservas) {
-                {
+            if (listaNueva.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "No se hicieron Reservas", Toast.LENGTH_SHORT).show();
+                sinReservasTxt.setText("No hay reservas registradas");
+            } else {
+                adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaNueva);
+                listViewReservas.setAdapter(adapter);
+            }
 
-
-
-
-                    TableRow row=new TableRow(table.getContext());
-                    TextView tv1=new TextView(table.getContext());
-                    TextView tv2=new TextView(table.getContext());
-                    tv1.setText("Fecha: ");
-                    tv2.setText(nuevaFecha);
-                    row.addView(tv1);
-                    row.addView(tv2);
-                    table.addView(row);
-
-
-                    Toast.makeText(getContexto(), n, Toast.LENGTH_SHORT);
-                }
-            }*/
         }
     };
 
     @Override
-    protected void onStop()
-    {
-
+    protected void onStop() {
 
 
         super.onStop();
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
 
         super.onDestroy();
     }

@@ -22,14 +22,15 @@ public class VerReservasPresenter implements IVerReservas.Presenter {
 
     private IVerReservas.View view;
     private IVerReservas.Model model;
-    public VerReservasPresenter(IVerReservas.View view){
+
+    public VerReservasPresenter(IVerReservas.View view) {
         this.view = view;
         model = new VerReservasModel(this);
     }
 
     @Override
-    public List<String> verReservas(String user,Context c) {
-        List<String> dates = model.getReservas(user,c);
+    public List<String> verReservas(String user, Context c) {
+        List<String> dates = model.getReservas(user, c);
         return dates;
     }
 

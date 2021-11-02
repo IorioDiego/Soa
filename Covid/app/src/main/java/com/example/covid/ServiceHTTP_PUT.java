@@ -17,7 +17,7 @@ public class ServiceHTTP_PUT extends IntentService {
 
     private URL mUrl;
     String token;
-    private  Exception mExeption = null;
+    private Exception mExeption = null;
 
 
     /**
@@ -33,39 +33,39 @@ public class ServiceHTTP_PUT extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         String url = intent.getExtras().getString("url");
         String token_refresh = intent.getExtras().getString("token_refresh_put");
-        ejercutarPUT(url,token_refresh);
+        ejercutarPUT(url, token_refresh);
 
     }
 
-    private void ejercutarPUT(String url,String token_refresh) {
-        String result = PUT(url,token_refresh);
+    private void ejercutarPUT(String url, String token_refresh) {
+        String result = PUT(url, token_refresh);
 
-        if(result == null){
-            Log.i("LOGUEO SERVICE","Error en ¨PUT:\n"+mExeption.toString());
+        if (result == null) {
+            Log.i("LOGUEO SERVICE", "Error en ¨PUT:\n" + mExeption.toString());
             return;
         }
 
-        if(result == "NO OK"){
+        if (result == "NO OK") {
             Log.i("LOGUEO SERVICE", "se recibio response NO OK");
             return;
         }
 
 
-        Intent i = new  Intent("com.example.intentservice.intent.action.RESPUESTA_PUT");
-        i.putExtra("refresh",result);
+        Intent i = new Intent("com.example.intentservice.intent.action.RESPUESTA_PUT");
+        i.putExtra("refresh", result);
         sendBroadcast(i);
     }
 
     private String PUT(String url, String token_refresh) {
         HttpURLConnection urlConnection = null;
-        String result= "";
+        String result = "";
 
-        try{
+        try {
             URL mURL = new URL(url);
 
-            urlConnection=(HttpURLConnection) mURL.openConnection();
-            urlConnection.setRequestProperty("Content-Type","aplication/json; charset=UTF-8");
-            urlConnection.setRequestProperty("Authorization","Bearer "+ token_refresh);
+            urlConnection = (HttpURLConnection) mURL.openConnection();
+            urlConnection.setRequestProperty("Content-Type", "aplication/json; charset=UTF-8");
+            urlConnection.setRequestProperty("Authorization", "Bearer " + token_refresh);
             urlConnection.setDoOutput(true);
             urlConnection.setDoInput(true);
             urlConnection.setConnectTimeout(5000);
@@ -80,39 +80,39 @@ public class ServiceHTTP_PUT extends IntentService {
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();
-            if( ( responseCode == HttpURLConnection.HTTP_OK ) || (responseCode == HttpURLConnection.HTTP_CREATED)){
-                InputStreamReader inputStream  = new InputStreamReader(urlConnection.getInputStream());
-                result  = convertInputStreamToString(inputStream).toString();
-            }else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST){
+            if ((responseCode == HttpURLConnection.HTTP_OK) || (responseCode == HttpURLConnection.HTTP_CREATED)) {
+                InputStreamReader inputStream = new InputStreamReader(urlConnection.getInputStream());
+                result = convertInputStreamToString(inputStream).toString();
+            } else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
 
-                InputStreamReader inputStream  = new InputStreamReader(urlConnection.getErrorStream());
-                result  = convertInputStreamToString(inputStream).toString();
-            }else{
-                result= "NO OK";
+                InputStreamReader inputStream = new InputStreamReader(urlConnection.getErrorStream());
+                result = convertInputStreamToString(inputStream).toString();
+            } else {
+                result = "NO OK";
             }
             mExeption = null;
             //wr.close();
             urlConnection.disconnect();
-            return  result;
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
             mExeption = e;
-            return  null;
+            return null;
         }
 
 
     }
 
-    private Object convertInputStreamToString(InputStreamReader inputStream)throws IOException {
+    private Object convertInputStreamToString(InputStreamReader inputStream) throws IOException {
         BufferedReader br = new BufferedReader(inputStream);
-        StringBuilder result  = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         String line;
-        while ((line = br.readLine()) != null){
-            result.append(line+"\n");
+        while ((line = br.readLine()) != null) {
+            result.append(line + "\n");
 
         }
         br.close();
-        return  result;
+        return result;
 
     }
 

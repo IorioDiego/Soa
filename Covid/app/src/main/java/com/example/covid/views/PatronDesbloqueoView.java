@@ -31,14 +31,14 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
+        presenter = new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patron_desbloqueo);
         presenter.inicializarPaper((IPatronDesbloqueo.View) this);
 
         final String patronGuardado = presenter.leerPaper();
-        if ( patronGuardado != null  && !patronGuardado.equals("null")){
+        if (patronGuardado != null && !patronGuardado.equals("null")) {
 
             setContentView(R.layout.activity_confirmar_patron);
             mPatterLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
@@ -70,8 +70,7 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                 }
             });
 
-        }else
-        {
+        } else {
 
             setContentView(R.layout.activity_patron_desbloqueo);
             mPatterLockView = (PatternLockView) findViewById(R.id.pattern_lock_view);
@@ -98,16 +97,16 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                 }
             });
 
-            Button btnGuardar = (Button)findViewById(R.id.btnGuardarPatron);
+            Button btnGuardar = (Button) findViewById(R.id.btnGuardarPatron);
             btnGuardar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.escribirPaper( patronFinal);
-                  //  Paper.book().write(patronBase,patronFinal);
+                    presenter.escribirPaper(patronFinal);
+                    //  Paper.book().write(patronBase,patronFinal);
                     Toast.makeText(PatronDesbloqueoView.this, "Patron Guardado Correctamente", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(PatronDesbloqueoView.this, ConfirmarPatronView.class);
                     startActivity(intent);////////ESTO ROMPE COSAASSS
-                    
+
                 }
             });
 
@@ -115,7 +114,6 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
 
 
     }
-
 
 
 }

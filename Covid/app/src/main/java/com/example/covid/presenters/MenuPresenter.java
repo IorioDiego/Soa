@@ -10,10 +10,10 @@ import com.example.covid.interfaces.IUserLogin;
 
 public class MenuPresenter implements IMenu.Presenter {
 
-    private static final String  URI_REFRESH = "http://so-unlam.net.ar/api/api/refresh";
+    private static final String URI_REFRESH = "http://so-unlam.net.ar/api/api/refresh";
     private IMenu.View view;
 
-    public MenuPresenter(IMenu.View view){
+    public MenuPresenter(IMenu.View view) {
         this.view = view;
     }
 
@@ -22,8 +22,8 @@ public class MenuPresenter implements IMenu.Presenter {
 
         Intent i = new Intent((Context) view, ServiceHTTP_PUT.class);
 
-        i.putExtra("url",URI_REFRESH);
-        i.putExtra("token_refresh",token_refresh);
+        i.putExtra("url", URI_REFRESH);
+        i.putExtra("token_refresh", token_refresh);
         ((Context) view).startService(i);
     }
 }

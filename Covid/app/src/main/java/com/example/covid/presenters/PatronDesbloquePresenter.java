@@ -17,7 +17,7 @@ public class PatronDesbloquePresenter implements IPatronDesbloqueo.Presenter {
 
     PatternLockView mPatterLockView;
 
-    public  PatronDesbloquePresenter(IPatronDesbloqueo.View view){
+    public PatronDesbloquePresenter(IPatronDesbloqueo.View view) {
         this.view = view;
         model = (IPatronDesbloqueo.Model) new PatronDesbloqueModel(this);
     }

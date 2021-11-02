@@ -14,7 +14,7 @@ import com.example.covid.models.UserLoginModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class UserLoginPresenter  implements  IUserLogin.Presenter{
+public class UserLoginPresenter implements IUserLogin.Presenter {
 
     private IUserLogin.View view;
     private IUserLogin.Model model;
@@ -22,48 +22,30 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
     private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
 
 
-        public UserLoginPresenter(IUserLogin.View view){
-            this.view = view;
-            model = new UserLoginModel(this);
-        }
-
-        @Override
-        public void loguearse(String email, String pssw) {
-
-            ConnectivityManager connectivityManager = (ConnectivityManager) view.getSystemService();
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-            if (networkInfo != null && networkInfo.isConnected()) {
-                // Si hay conexión a Internet en este momento
-                Toast.makeText(view.getContexto(),"BUENA conexion de la red",Toast.LENGTH_SHORT).show();
-
-                JSONObject obj = new JSONObject();
-                try {
-
-                    obj.put("email", email);
-                    obj.put("password", pssw);
-
-
-                    Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
-                    i.putExtra("evento","log");
-                    i.putExtra("uri",URI_LOGIN_USER);
-                    i.putExtra("datosJson",obj.toString());
-                    ((Context) view).startService(i);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                int i;
-            } else {
-                Toast.makeText(view.getContexto(),"Error de conexion a la red",Toast.LENGTH_SHORT).show();
-            }
-
-
-        }
+    public UserLoginPresenter(IUserLogin.View view) {
+        this.view = view;
+        model = new UserLoginModel(this);
+    }
 
     @Override
-    public void registrarEvento(String env, String event, String desc, String token,String token_refresh) {
+    public void loguearse(String email, String pssw) {
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("email", email);
+            obj.put("password", pssw);
+            Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
+            i.putExtra("evento", "log");
+            i.putExtra("uri", URI_LOGIN_USER);
+            i.putExtra("datosJson", obj.toString());
+            ((Context) view).startService(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void registrarEvento(String env, String event, String desc, String token, String token_refresh) {
 
         JSONObject obj = new JSONObject();
         try {
@@ -73,12 +55,12 @@ public class UserLoginPresenter  implements  IUserLogin.Presenter{
             obj.put("description", desc);
 
 
-            Intent i = new Intent((Context) view,ServiceHTTP_POST.class);
-            i.putExtra("evento","RegistrarEvento");
-            i.putExtra("uri",URI_REGISTER_EVENT);
-            i.putExtra("datosJson",obj.toString());
-            i.putExtra("tokenEvento",token);
-            i.putExtra("token_refresh",token_refresh);
+            Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
+            i.putExtra("evento", "RegistrarEvento");
+            i.putExtra("uri", URI_REGISTER_EVENT);
+            i.putExtra("datosJson", obj.toString());
+            i.putExtra("tokenEvento", token);
+            i.putExtra("token_refresh", token_refresh);
 
             ((Context) view).startService(i);
 

@@ -8,19 +8,17 @@ import java.util.List;
 
 public interface IVerReservas {
 
-    interface View{
+    interface View {
 
-        Context getContexto();
 
-        Object getSystemService();
     }
 
-    interface Presenter{
+    interface Presenter {
         public List<String> verReservas(String user, Context c);
     }
 
-    interface Model{
-        public List<String> getReservas(String user,Context c);
+    interface Model {
+        public List<String> getReservas(String user, Context c);
     }
 
 }

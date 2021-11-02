@@ -12,16 +12,16 @@ import java.util.Map;
 public class ListaShakePresenter implements IListaShake.Presenter {
 
 
-    private  IListaShake.View view;
-    private  IListaShake.Model model;
+    private IListaShake.View view;
+    private IListaShake.Model model;
 
-    public ListaShakePresenter(IListaShake.View view){
+    public ListaShakePresenter(IListaShake.View view) {
         this.view = (IListaShake.View) view;
         model = (IListaShake.Model) new ListaShakeModel(this);
     }
 
     @Override
-    public Map<String, String> leerCantDeShakes(Context c,String user) {
-        return model.leerCantDeShakes(c,user);
+    public Map<String, String> leerCantDeShakes(Context c, String user) {
+        return model.leerCantDeShakes(c, user);
     }
 }

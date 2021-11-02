@@ -16,4 +16,28 @@
       app:layout_constraintStart_toStartOf="parent"
       tools:ignore="MissingConstraints"
       tools:layout_editor_absoluteY="163dp" />
+
+  <TextView
+      android:id="@+id/textView15"
+      android:layout_width="396dp"
+      android:layout_height="39dp"
+      android:layout_marginTop="16dp"
+      android:text="Shakes Registrados"
+      android:textAlignment="center"
+      android:textSize="34sp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/sinShakesTxtView"
+      android:layout_width="403dp"
+      android:layout_height="30dp"
+      android:layout_marginTop="24dp"
+      android:textAlignment="center"
+      android:textColor="@color/design_default_color_error"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textView15" />
 </androidx.constraintlayout.widget.ConstraintLayout>

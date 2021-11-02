@@ -10,13 +10,13 @@ public interface IReservas {
 
     interface View{
 
-        Context getContexto();
 
-        Object getSystemService();
+
+
     }
 
     interface  Presenter {
-        void reservar(Date fechaSelec, String cliente );
+        void reservar(Date fechaSelec, String cliente ,Context c);
 
         void postearReserva(String env, String evento, String desc, String token, String token_refresh);
 

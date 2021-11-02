@@ -18,7 +18,7 @@ import java.util.List;
 
 import io.paperdb.Paper;
 
-public class ConfirmarPatronView extends AppCompatActivity implements  IPatronDesbloqueo.View {
+public class ConfirmarPatronView extends AppCompatActivity implements IPatronDesbloqueo.View {
 
     PatternLockView mPatterLockView;
 
@@ -29,7 +29,7 @@ public class ConfirmarPatronView extends AppCompatActivity implements  IPatronDe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmar_patron);
-        presenter  =  new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
+        presenter = new PatronDesbloquePresenter((IPatronDesbloqueo.View) this);
         presenter.inicializarPaper((IPatronDesbloqueo.View) ConfirmarPatronView.this);
         final String patronGuardado = presenter.leerPaper();
         if ((patronGuardado != null) && !patronGuardado.equals("null")) {

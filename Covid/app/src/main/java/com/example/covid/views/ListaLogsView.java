@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.covid.MyAdapter;
 import com.example.covid.R;
@@ -19,23 +20,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ListaLogsView extends AppCompatActivity implements  IListaLogs.View  {
+public class ListaLogsView extends AppCompatActivity implements IListaLogs.View {
 
-    private  ListView  logList;
+    private ListView logList;
+    private TextView sinLogsTxt;
 
-
-    private  IListaLogs.Presenter presenter;
+    private IListaLogs.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_logs_view);
         presenter = new ListaLogsPresenter(this);
+        sinLogsTxt = findViewById(R.id.sinLogsTxtView);
+        logList = findViewById(R.id.logList);
+        HashMap<String, String> logMap = (HashMap<String, String>) presenter.leerCantDeLogueos(getApplicationContext());
+        if (logMap.isEmpty()) {
+            sinLogsTxt.setText("No hay Inicios de Sesión registrados");
+        } else {
+            MyAdapter adapter = new MyAdapter(logMap);
+            logList.setAdapter(adapter);
+        }
 
-        logList =findViewById(R.id.logList);
-        HashMap<String,String> logMap = (HashMap<String, String>) presenter.leerCantDeLogueos(getApplicationContext());
-        MyAdapter adapter = new MyAdapter(logMap);
-        logList.setAdapter(adapter);
 
     }
 }

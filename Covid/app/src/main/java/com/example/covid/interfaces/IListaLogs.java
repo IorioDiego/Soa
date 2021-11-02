@@ -6,18 +6,18 @@ import java.util.Map;
 
 public interface IListaLogs {
 
-    interface View{
+    interface View {
 
     }
 
-    interface  Presenter {
+    interface Presenter {
 
-        Map<String,String> leerCantDeLogueos(Context c);
+        Map<String, String> leerCantDeLogueos(Context c);
     }
 
-    interface  Model{
+    interface Model {
 
-        Map<String,String> leerCantDeLogueos(Context c);
+        Map<String, String> leerCantDeLogueos(Context c);
     }
 
 }

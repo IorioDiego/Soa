@@ -24,8 +24,6 @@ public class MyAdapter extends BaseAdapter {
     }
 
 
-
-
     @Override
     public Map.Entry<String, String> getItem(int position) {
         return (Map.Entry) mData.get(position);

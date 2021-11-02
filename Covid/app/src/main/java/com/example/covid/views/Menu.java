@@ -20,14 +20,14 @@ import org.json.JSONObject;
 
 public class Menu extends AppCompatActivity implements IMenu.View {
 
-    private  String token;
+    private String token;
     private String token_refresh;
     private IMenu.Presenter presenter;
 
     String userTxt;
     Button reservar, verReservas;
 
-    private ReceptorActualizacion receiverRefresh= new ReceptorActualizacion();
+    private ReceptorActualizacion receiverRefresh = new ReceptorActualizacion();
     public IntentFilter filtro;
 
 
@@ -39,15 +39,14 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        token= extras.getString("token");
-        token_refresh= extras.getString("token_refresh");
+        token = extras.getString("token");
+        token_refresh = extras.getString("token_refresh");
 
         userTxt = extras.getString("user");
         reservar = (Button) findViewById(R.id.buttonReservar);
         verReservas = (Button) findViewById(R.id.buttonVerReservas);
         reservar.setOnClickListener(handleBtonReservar);
         verReservas.setOnClickListener(handleBtnVerReservas);
-
 
 
     }
@@ -74,29 +73,27 @@ public class Menu extends AppCompatActivity implements IMenu.View {
     };
 
 
-
     private void configurarBroadcastRecieverRefresh() {
-        filtro = new IntentFilter( "com.example.intentservice.intent.action.RESPUESTA_PUT");
+        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_PUT");
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(receiverRefresh,filtro);
+        registerReceiver(receiverRefresh, filtro);
     }
 
 
-    public class ReceptorActualizacion extends BroadcastReceiver
-    {
+    public class ReceptorActualizacion extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String resultadoRefresh  = intent.getStringExtra("refresh");
+            String resultadoRefresh = intent.getStringExtra("refresh");
             JSONObject resultadoRefreshJason = null;
             try {
                 resultadoRefreshJason = new JSONObject(resultadoRefresh);
 
                 String success = resultadoRefreshJason.getString("success");
 
-                if(success.equals("true")){
+                if (success.equals("true")) {
                     token = resultadoRefreshJason.getString("token");
-                    token_refresh=resultadoRefreshJason.getString("token_refresh");
+                    token_refresh = resultadoRefreshJason.getString("token_refresh");
 
 
                 }
@@ -109,50 +106,40 @@ public class Menu extends AppCompatActivity implements IMenu.View {
     }
 
     @Override
-    protected void onStop()
-    {
-
-
+    protected void onStop() {
 
 
         super.onStop();
     }
 
 
-
     @Override
-    protected void onDestroy()
-    {
-
+    protected void onDestroy() {
 
 
         super.onDestroy();
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
 
         super.onPause();
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
 
 
         super.onRestart();
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
 
         super.onResume();
 
 
     }
-
 
 
 }

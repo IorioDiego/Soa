@@ -98,7 +98,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                presenter.reservar(currentDate, userTxt, getApplicationContext());
+
                 presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
 
             } else {
@@ -152,7 +152,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
                         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                         if (networkInfo != null && networkInfo.isConnected()) {
-                            presenter.reservar(currentDate, userTxt, getApplicationContext());
+
                             presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
                             presenter.RegistrarCantidadShakes(getApplicationContext(), userTxt);
 
@@ -199,6 +199,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
                         presenter.actulizarToken(token_refresh);
                     }
                 }else{
+                    presenter.reservar(currentDate, userTxt, getApplicationContext());
                     Toast.makeText(getApplicationContext(), "Se reservó un lugar correctamente", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {

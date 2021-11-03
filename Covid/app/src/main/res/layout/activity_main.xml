@@ -38,34 +38,14 @@
         android:text="PSW" />
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="246dp"
-        android:text="mail" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="173dp"
-        android:text="Apellido" />
-
-    <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="304dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="267dp"
         android:text="DNI" />
 
     <Button
@@ -94,31 +74,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="42dp"
         android:ems="10"
         android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/editTextLastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="157dp"
-        android:ems="10"
-        android:inputType="text" />
-
-    <EditText
-        android:id="@+id/editTextDNI"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="291dp"
-        android:layout_marginEnd="100dp"
-        android:ems="10"
-        android:inputType="number" />
 
     <TextView
         android:id="@+id/textView2"
@@ -127,8 +85,40 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="13dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="60dp"
         android:text="Nombre" />
+
+    <EditText
+        android:id="@+id/editTextLastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="112dp"
+        android:ems="10"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="128dp"
+        android:text="Apellido" />
+
+    <EditText
+        android:id="@+id/editTextDNI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="247dp"
+        android:layout_marginEnd="101dp"
+        android:ems="10"
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/editTextGroup"
@@ -137,8 +127,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="103dp"
-        android:layout_marginBottom="185dp"
+        android:layout_marginStart="106dp"
+        android:layout_marginBottom="241dp"
         android:ems="10"
         android:inputType="number" />
 
@@ -148,7 +138,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="336dp"
+        android:layout_marginBottom="393dp"
         android:ems="10"
         android:inputType="text" />
 
@@ -159,10 +149,20 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="230dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="189dp"
         android:ems="10"
         android:inputType="text" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="205dp"
+        android:text="Email" />
 
     <EditText
         android:id="@+id/editTextCom"
@@ -170,7 +170,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="269dp"
+        android:layout_marginBottom="326dp"
         android:ems="10"
         android:inputType="number" />
 

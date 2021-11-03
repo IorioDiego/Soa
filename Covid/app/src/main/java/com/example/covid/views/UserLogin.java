@@ -169,6 +169,10 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
                     token = datosJson.getString(TOKEN_KEY);
                     tokenRefresh = datosJson.getString(TOKEN_REFRESH_KEY);
                     presenter.registrarEvento(ENV, "EVENTO_LOGUEO", "El usuario se logueo en el sistema", token, tokenRefresh);
+                }else{
+                    String msg = datosJson.getString(MSG_KEY);
+
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }
 
             } catch (JSONException e) {
@@ -188,15 +192,15 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
                 String datosJsonString = intent.getStringExtra(DATOSJSON_KEY);
                 JSONObject datosJson = new JSONObject(datosJsonString);
 
-                Log.i("LOGUEO_MAIN", "Datos Json Main Thread" + datosJsonString);
 
-                //txtResultado.setText(datosJsonString);
+
+
 
                 String resultadoRequest = datosJson.getString(SUCCESS_KEY);
 
                 if (resultadoRequest == "true") {
 
-                    Log.i("LOGUEO_MAIN", "TOKEN MAIN TRHEAD" + token);
+
                     presenter.registrarCantidadLogueos(getApplicationContext());
 
                     Intent i = new Intent(UserLogin.this, Menu.class);
@@ -207,7 +211,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
                 } else {
                     String msg = datosJson.getString(MSG_KEY);
-                    Log.i("LOGUEO_MAIN", msg);
+
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }
 

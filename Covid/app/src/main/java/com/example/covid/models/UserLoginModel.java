@@ -15,7 +15,7 @@ import java.util.UUID;
 public class UserLoginModel implements IUserLogin.Model {
 
     private  IUserLogin.Presenter presenter;
-
+    private static final String filenameLogueos = "logueos";
 
     public UserLoginModel(IUserLogin.Presenter presenter){
         this.presenter = presenter;
@@ -25,11 +25,12 @@ public class UserLoginModel implements IUserLogin.Model {
     public void registrarCantidadLogueos(Context c) {
         Integer l=0;
 
-        SharedPreferences preferencias= c.getSharedPreferences("logueos" , Context.MODE_PRIVATE);
+        SharedPreferences preferencias= c.getSharedPreferences(filenameLogueos , Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
         long hoy = System.currentTimeMillis();
+        String datePattern = "dd/MM/yy";
         Date fechaHoy = new Date(hoy);
-        DateFormat df = new SimpleDateFormat("dd/MM/yy");
+        DateFormat df = new SimpleDateFormat(datePattern);
         String fechaDF = df.format(fechaHoy);
 
         String cantLogs = preferencias.getString(fechaDF, null);
@@ -48,7 +49,7 @@ public class UserLoginModel implements IUserLogin.Model {
     @Override
     public String leerCantDeLogueos(Context c) {
 
-        SharedPreferences preferencias= c.getSharedPreferences("logueos" , Context.MODE_PRIVATE);
+        SharedPreferences preferencias= c.getSharedPreferences(filenameLogueos , Context.MODE_PRIVATE);
         long hoy = System.currentTimeMillis();
         Date fechaHoy = new Date(hoy);
         DateFormat df = new SimpleDateFormat("dd/MM/yy");

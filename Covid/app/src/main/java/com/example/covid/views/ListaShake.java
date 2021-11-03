@@ -18,7 +18,7 @@ public class ListaShake extends AppCompatActivity implements IListaShake.View {
 
     private ListView logShake;
     private TextView sinShakeText;
-
+    private static final String userKey = "user", AVISO = "No hay shakes registrados";
     private IListaShake.Presenter presenter;
 
     @Override
@@ -29,11 +29,11 @@ public class ListaShake extends AppCompatActivity implements IListaShake.View {
         presenter = new ListaShakePresenter(this);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        String user = extras.getString("user");
+        String user = extras.getString(userKey);
         logShake = findViewById(R.id.shakeList);
         HashMap<String, String> shakeMap = (HashMap<String, String>) presenter.leerCantDeShakes(getApplicationContext(), user);
         if (shakeMap.isEmpty()) {
-            sinShakeText.setText("No hay Shakes registrados");
+            sinShakeText.setText(AVISO);
         }
         MyAdapter adapter = new MyAdapter(shakeMap);
         logShake.setAdapter(adapter);

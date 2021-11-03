@@ -15,8 +15,7 @@ import java.util.UUID;
 
 public class ReservaModel implements IReservas.Model {
     private  IReservas.Presenter presenter;
-
-
+    private static final String fileNameReservas= "reservas", filenameShakes = "Shakes";
 
     public ReservaModel(IReservas.Presenter presenter){
         this.presenter = presenter;
@@ -25,7 +24,7 @@ public class ReservaModel implements IReservas.Model {
 
     @Override
     public void makeReservation(String client, Date date, Context c) {
-        SharedPreferences preferencias= c.getSharedPreferences("reservas" + client, Context.MODE_PRIVATE);
+        SharedPreferences preferencias= c.getSharedPreferences(fileNameReservas + client, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
         String uuid = UUID.randomUUID().toString();
         editor.putString(uuid, date.toString());
@@ -36,11 +35,12 @@ public class ReservaModel implements IReservas.Model {
     public void RegistrarCantidadShakes(Context c,String user) {
         Integer s=0;
 
-        SharedPreferences preferencias= c.getSharedPreferences(user+"Shakes" , Context.MODE_PRIVATE);
+        SharedPreferences preferencias= c.getSharedPreferences(user + filenameShakes , Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferencias.edit();
+        String datePattern = "dd/MM/yy";
         long hoy = System.currentTimeMillis();
         Date fechaHoy = new Date(hoy);
-        DateFormat df = new SimpleDateFormat("dd/MM/yy");
+        DateFormat df = new SimpleDateFormat(datePattern);
         String fechaDF = df.format(fechaHoy);
 
         String cantLogs = preferencias.getString(fechaDF, null);
@@ -59,7 +59,7 @@ public class ReservaModel implements IReservas.Model {
     @Override
     public List<String> getReservas(String user, Context c) {
         List<String> listDates = new ArrayList<>();
-        SharedPreferences preferencias = c.getSharedPreferences("reservas"+user, Context.MODE_PRIVATE);
+        SharedPreferences preferencias = c.getSharedPreferences(fileNameReservas + user, Context.MODE_PRIVATE);
         String n = preferencias.getString("fecha", null);
 
         Map<String,String> m = (Map<String, String>) preferencias.getAll();

@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="420dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="434dp"
         android:text="Comision" />
 
     <TextView
@@ -22,9 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="488dp"
-        android:text="group" />
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="518dp"
+        android:text="Group" />
 
     <TextView
         android:id="@+id/textView6"
@@ -89,17 +89,6 @@
         android:layout_marginTop="162dp" />
 
     <EditText
-        android:id="@+id/editTextEnv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="PROD" />
-
-    <EditText
         android:id="@+id/editTextName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,8 +96,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="82dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Diego" />
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editTextLastName"
@@ -118,8 +106,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="157dp"
         android:ems="10"
-        android:inputType="text"
-        android:text="Iorio" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextDNI"
@@ -131,18 +118,7 @@
         android:layout_marginTop="291dp"
         android:layout_marginEnd="100dp"
         android:ems="10"
-        android:inputType="number"
-        android:text="40730349" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="23dp"
-        android:text="Environment" />
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/textView2"
@@ -161,22 +137,20 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="101dp"
-        android:layout_marginBottom="133dp"
+        android:layout_marginStart="103dp"
+        android:layout_marginBottom="185dp"
         android:ems="10"
-        android:inputType="number"
-        android:text="11" />
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/editTexPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="283dp"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="336dp"
         android:ems="10"
-        android:inputType="text"
-        android:text="12345678" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextEmail"
@@ -184,11 +158,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="87dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="101dp"
         android:layout_marginTop="230dp"
         android:ems="10"
-        android:inputType="text"
-        android:text="diorio@gmail.com" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextCom"
@@ -196,9 +170,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="206dp"
+        android:layout_marginBottom="269dp"
         android:ems="10"
-        android:inputType="number"
-        android:text="3900" />
+        android:inputType="number" />
 
 </RelativeLayout>

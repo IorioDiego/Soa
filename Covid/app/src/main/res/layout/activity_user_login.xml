@@ -55,8 +55,7 @@
         android:layout_marginTop="148dp"
         android:layout_marginEnd="13dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="diorio@gmail.com" />
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/editTextLoginPssw"
@@ -67,8 +66,7 @@
         android:layout_marginTop="282dp"
         android:layout_marginEnd="24dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="12345678" />
+        android:inputType="textPersonName" />
 
     <TextView
         android:id="@+id/textViewLogs"

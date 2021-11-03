@@ -52,7 +52,7 @@
         <service
             android:name=".ServiceHTTP_POST"
             android:enabled="true"
-            android:label="ServicesHttp GET" />
+            android:label="ServicesHttp POST" />
     </application>
 
 </manifest>

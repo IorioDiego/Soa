@@ -21,7 +21,7 @@ import io.paperdb.Paper;
 public class ConfirmarPatronView extends AppCompatActivity implements IPatronDesbloqueo.View {
 
     PatternLockView mPatterLockView;
-
+    private static final String PATRON_CORRECTO = "Patron CORRECTO", PATRON_INCORRECTO = "Patron INCORRECTO";
     String patronFinal = "";
     IPatronDesbloqueo.Presenter presenter;
 
@@ -51,11 +51,11 @@ public class ConfirmarPatronView extends AppCompatActivity implements IPatronDes
                 public void onComplete(List<PatternLockView.Dot> pattern) {
                     patronFinal = PatternLockUtils.patternToString(mPatterLockView, pattern);
                     if (patronFinal.equals(patronGuardado)) {
-                        Toast.makeText(ConfirmarPatronView.this, "Patron CORRECTO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ConfirmarPatronView.this, PATRON_CORRECTO, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(ConfirmarPatronView.this, UserLogin.class);
                         startActivity(intent);
                     } else
-                        Toast.makeText(ConfirmarPatronView.this, "Patron INCORRECTO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ConfirmarPatronView.this, PATRON_INCORRECTO, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

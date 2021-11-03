@@ -6,6 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,25 +28,29 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
     private EditText txtEnv;
     private EditText txtPassword;
     private EditText txtLastName;
-
     private EditText txtDni;
     private EditText txtEmail;
     private EditText txtComission;
     private EditText txtGroup;
-    private EditText txtResultado;
+
 
 
     private Button btnReg;
-
     public IntentFilter filtro;
-
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
-
-
     private IUserRegister.Presenter presenter;
 
     String token;
     String tokenRefresh;
+
+    private static final String  DATOS_JSON_KEY = "datosJson",
+            SUCCESS_KEY = "success",
+            AVISO  = "Usuario Registrado con Exito",
+            TRUE  = "true",
+            MSG_KEY  = "msg",
+            SUBSCRIBE_RESPUESTA_OPERACION = "com.example.intentservice.intent.action.RESPUESTA_OPERACION",
+            ENV  ="PROD",
+            ERROR_CONEXION = "Error de conexion a la red";
 
 
     @Override
@@ -53,7 +59,7 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
         setContentView(R.layout.activity_main);
 
         presenter = (IUserRegister.Presenter) new UserRegisterPresenter(this);
-        txtEnv = (EditText) findViewById(R.id.editTextEnv);
+        //txtEnv = (EditText) findViewById(R.id.editTextEnv);
         txtName = (EditText) findViewById(R.id.editTextName);
         txtLastName = (EditText) findViewById(R.id.editTextLastName);
         txtDni = (EditText) findViewById(R.id.editTextDNI);
@@ -68,7 +74,7 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
     }
 
     private void configurarBroadcastReciever() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+        filtro = new IntentFilter( SUBSCRIBE_RESPUESTA_OPERACION);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverReg, filtro);
     }
@@ -77,32 +83,21 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
         @Override
         public void onClick(View v) {
 
-            registrarse(txtEnv.getText().toString(),
-                    txtName.getText().toString(),
-                    txtLastName.getText().toString(),
-                    txtDni.getText().toString(),
-                    txtEmail.getText().toString(),
-                    txtPassword.getText().toString(),
-                    txtComission.getText().toString(),
-                    txtGroup.getText().toString());
+            ConnectivityManager connectivityManager = (ConnectivityManager)  getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
+            if (networkInfo != null && networkInfo.isConnected()) {
+
+                presenter.registrarse(ENV, txtName.getText().toString(), txtLastName.getText().toString(), txtDni.getText().toString(),
+                        txtEmail.getText().toString(), txtPassword.getText().toString(), txtComission.getText().toString(), txtGroup.getText().toString());
+
+            }else
+            {
+                Toast.makeText(getApplicationContext(), ERROR_CONEXION, Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
-    @Override
-    public void registrarse(String environment, String name, String lastname, String dni, String email, String pssw, String com, String group) {
-        presenter.registrarse(environment, name, lastname, dni, email, pssw, com, group);
-    }
-
-    @Override
-    public Context getContexto() {
-        return getApplicationContext();
-    }
-
-    @Override
-    public Object getSystemService() {
-        return getSystemService(Context.CONNECTIVITY_SERVICE);
-    }
 
 
     public class ReceptorOperacion extends BroadcastReceiver {
@@ -112,24 +107,21 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
 
             try {
-                String datosJsonString = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra(DATOS_JSON_KEY);
                 JSONObject datosJson = new JSONObject(datosJsonString);
 
-                //  Log.i("LOGUEO_MAIN","Datos Json Main Thread"+ datosJsonString);
+                String resultadoRequest = datosJson.getString(SUCCESS_KEY);
 
 
-                String resultadoRequest = datosJson.getString("success");
-
-
-                if (resultadoRequest.equals("true")) {
-                    Toast.makeText(getApplicationContext(), "Usuario Registrado con Exito", Toast.LENGTH_SHORT).show();
+                if (resultadoRequest.equals(TRUE)) {
+                    Toast.makeText(getApplicationContext(), AVISO, Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(UserRegister.this, UserLogin.class);
 
                     startActivity(i);
                     finish();
 
                 } else {
-                    String msg = datosJson.getString("msg");
+                    String msg = datosJson.getString(MSG_KEY);
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }
 

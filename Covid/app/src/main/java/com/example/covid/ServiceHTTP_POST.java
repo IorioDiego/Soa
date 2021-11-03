@@ -28,78 +28,74 @@ public class ServiceHTTP_POST extends IntentService {
     String token_refresh;
     Integer code = 0;
     private Exception mExeption = null;
+    private static final String     URL_KEY = "uri",
+                                    EVENT_KEY = "evento",
+                                    DATOS_JSON_KEY = "datosJson",
+                                    REGISTRO_EVENTO_KEY="RegistrarEvento",
+                                    TOKEN_EVENTO_KEY = "tokenEvento",
+                                    TOKEN_REFRESH_KEY ="token_refresh",
+                                    EVENTO_LOG ="log",
+                                    TIMEOUT  = "timeout";
+
+
 
     public ServiceHTTP_POST() {
-        super("ServicesHttp GET");
+        super("ServicesHttp POST");
     }
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("LOGUEO SERVICE", "onCreate()");
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         try {
 
-            String evento = intent.getExtras().getString("evento");
-            String uri = intent.getExtras().getString("uri");
-            JSONObject datosJson = new JSONObject(intent.getExtras().getString("datosJson"));
-            if (evento.equals("RegistrarEvento")) {
-                token = intent.getExtras().getString("tokenEvento");
-                token_refresh = intent.getExtras().getString("token_refresh");
+            String evento = intent.getExtras().getString(EVENT_KEY);
+            String uri = intent.getExtras().getString( URL_KEY);
+            JSONObject datosJson = new JSONObject(intent.getExtras().getString(DATOS_JSON_KEY));
+            if (evento.equals(REGISTRO_EVENTO_KEY)) {
+                token = intent.getExtras().getString(TOKEN_EVENTO_KEY);
+                token_refresh = intent.getExtras().getString(TOKEN_REFRESH_KEY);
             }
-
-
             ejectuarPost(uri, datosJson, evento);
-
-
         } catch (Exception e) {
-            //e.printStackTrace();
-            Log.i("LOGUEO SERVICE", "Error" + e.toString());
         }
     }
 
     protected void ejectuarPost(String uri, JSONObject datosJson, String evento) {
-
-        if (evento.equals("log")) {
-
+        if (evento.equals(EVENTO_LOG)) {
             String result = POST(uri, datosJson, evento);
             if (result == null) {
-                Log.i("LOGUEO SERVICE", "Error en POST:\n" + mExeption.toString());
                 return;
             }
 
             if (result == "NO OK") {
-                Log.i("LOGUEO SERVICE", "se recibio response NO OK");
                 return;
             }
-
-
             Intent i = new Intent("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
             i.putExtra("datosJson", result);
             sendBroadcast(i);
 
-        } else if (evento.equals("RegistrarEvento")) {
+        } else if (evento.equals(REGISTRO_EVENTO_KEY)) {
 
             String result = POST_Evento(uri, datosJson, evento);
             if (result == null) {
-                Log.i("LOGUEO SERVICE", "Error en POST:\n" + mExeption.toString());
+
                 return;
             }
 
             if (result == "NO OK") {
-                Log.i("LOGUEO SERVICE", "se recibio response NO OK");
+
                 return;
             }
 
-
             Intent i = new Intent("com.example.intentservice.intent.action.POST_EVENTO");
-            i.putExtra("datosJson", result);
+            i.putExtra(DATOS_JSON_KEY, result);
             if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
-                i.putExtra("timeout", code);
+                i.putExtra(TIMEOUT, code);
             }
             sendBroadcast(i);
         }
@@ -123,9 +119,9 @@ public class ServiceHTTP_POST extends IntentService {
 
             DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
             wr.write(datosJson.toString().getBytes("UTF-8"));
-            Log.i("LOGUEO SEVICE", "Se va a enviar  al servidor" + datosJson.toString());
 
-            wr.flush();//si no limpio el buffer la conexion puede queadr colgada
+
+            wr.flush();
 
             urlConnection.connect();
 
@@ -172,10 +168,7 @@ public class ServiceHTTP_POST extends IntentService {
 
             DataOutputStream wr = new DataOutputStream(urlConnection.getOutputStream());
             wr.write(datosJson.toString().getBytes("UTF-8"));
-            Log.i("LOGUEO SEVICE", "Se va a enviar  al servidor" + datosJson.toString());
-
             wr.flush();//si no limpio el buffer la conexion puede queadr colgada
-
             urlConnection.connect();
 
             int responseCode = urlConnection.getResponseCode();

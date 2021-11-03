@@ -33,7 +33,8 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
     Button verReservas;
     String user;
     private IVerReservas.Presenter presenter;
-    private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
+    private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event",
+            USER_KEY = "user", SIN_RESERVAS = "No se hicieron reservas";
     private Thread threadVerReservas = null;
     TableLayout table;
     String userTxt;
@@ -55,7 +56,7 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
         sinReservasTxt = findViewById(R.id.sinReservasTxtView);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        userTxt = extras.getString("user");
+        userTxt = extras.getString(USER_KEY);
 
     }
 
@@ -70,12 +71,12 @@ public class VerReservasView extends AppCompatActivity implements IVerReservas.V
             for (String n : reservas) {
 
                 String[] partesFecha = n.split(" ");
-                String nuevaFecha = partesFecha[0] + " " + partesFecha[1] + " " + partesFecha[2] + " " + partesFecha[3];
+                String nuevaFecha = partesFecha[0] + " " + partesFecha[1] + " " + partesFecha[2];
                 listaNueva.add(nuevaFecha);
             }
             if (listaNueva.isEmpty()) {
-                Toast.makeText(getApplicationContext(), "No se hicieron Reservas", Toast.LENGTH_SHORT).show();
-                sinReservasTxt.setText("No hay reservas registradas");
+                Toast.makeText(getApplicationContext(), SIN_RESERVAS, Toast.LENGTH_SHORT).show();
+                sinReservasTxt.setText(SIN_RESERVAS);
             } else {
                 adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, listaNueva);
                 listViewReservas.setAdapter(adapter);

@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ListaLogsModel implements IListaLogs.Model {
     private IListaLogs.Presenter presenter;
-
+    private static final String fileName = "logueos";
     public ListaLogsModel(IListaLogs.Presenter presenter){
         this.presenter = presenter;
     }
@@ -22,7 +22,7 @@ public class ListaLogsModel implements IListaLogs.Model {
     @Override
     public Map<String, String> leerCantDeLogueos(Context c) {
 
-        SharedPreferences preferencias = c.getSharedPreferences("logueos", Context.MODE_PRIVATE);
+        SharedPreferences preferencias = c.getSharedPreferences(fileName, Context.MODE_PRIVATE);
         return  (Map<String, String>) preferencias.getAll();
     }
 }

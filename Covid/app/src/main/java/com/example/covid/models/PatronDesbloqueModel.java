@@ -10,7 +10,6 @@ import io.paperdb.Paper;
 public class PatronDesbloqueModel implements  IPatronDesbloqueo.Model {
 
     String patronBase = "patron";
-    //String patronFinal = "";
 
     private IPatronDesbloqueo.Presenter presenter ;
     public PatronDesbloqueModel(IPatronDesbloqueo.Presenter presenter){
@@ -24,7 +23,7 @@ public class PatronDesbloqueModel implements  IPatronDesbloqueo.Model {
 
     @Override
     public String leerPaper() {
-       return Paper.book().read(patronBase);
+        return Paper.book().read(patronBase);
     }
 
     @Override

@@ -10,13 +10,15 @@ import java.util.Map;
 
 public class ListaShakeModel implements IListaShake.Model {
     private IListaShake.Presenter presenter;
+    private static final String fileName = "Shakes";
 
     public ListaShakeModel(IListaShake.Presenter presenter){
         this.presenter = presenter;
     }
+
     @Override
     public Map<String, String> leerCantDeShakes(Context c,String user) {
-        SharedPreferences preferencias = c.getSharedPreferences(user+"Shakes", Context.MODE_PRIVATE);
+        SharedPreferences preferencias = c.getSharedPreferences(user + fileName, Context.MODE_PRIVATE);
         return  (Map<String, String>) preferencias.getAll();
     }
 }

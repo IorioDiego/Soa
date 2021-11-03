@@ -28,8 +28,6 @@ import com.example.covid.presenters.UserLoginPresenter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
-
 public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
@@ -49,6 +47,16 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
     public IntentFilter filtro;
     private ReceptorOperacion receiverReg = new ReceptorOperacion();
     private RecpetorEvento receiverEvento = new RecpetorEvento();
+    private static final String SUBSCRIBE_POST_EVENTO = "com.example.intentservice.intent.action.POST_EVENTO",
+            SUBSCRIBE_RESPUESTA_OPERACION = "com.example.intentservice.intent.action.RESPUESTA_OPERACION",
+            ERROR_CONEXION = "Error de conexion a la red",
+            DATOSJSON_KEY = "datosJson",
+            TOKEN_KEY = "token",
+            TOKEN_REFRESH_KEY = "token_refresh",
+            SUCCESS_KEY = "success",
+            USER_KEY = "user",
+            MSG_KEY = "msg",
+            ENV = "PROD";
     String token;
     String tokenRefresh;
 
@@ -95,14 +103,14 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
     private void configurarBroadcastRecieverPostEvento() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.POST_EVENTO");
+        filtro = new IntentFilter(SUBSCRIBE_POST_EVENTO);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverEvento, filtro);
     }
 
 
     private void configurarBroadcastReciever() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_OPERACION");
+        filtro = new IntentFilter(SUBSCRIBE_RESPUESTA_OPERACION);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverReg, filtro);
     }
@@ -126,7 +134,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
             if (networkInfo != null && networkInfo.isConnected()) {
                 presenter.loguearse(txtEmail.getText().toString(), txtPssw.getText().toString());
             } else {
-                Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), ERROR_CONEXION, Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -152,15 +160,15 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
             try {
-                String datosJsonString = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra(DATOSJSON_KEY);
                 JSONObject datosJson = new JSONObject(datosJsonString);
                 //Toast.makeText(getApplicationContext(),"Se recibido respuesta del server",Toast.LENGTH_SHORT).show();
-                String resultadoRequest = datosJson.getString("success");
+                String resultadoRequest = datosJson.getString(SUCCESS_KEY);
 
                 if (resultadoRequest.equals("true")) {
-                    token = datosJson.getString("token");
-                    tokenRefresh = datosJson.getString("token_refresh");
-                    presenter.registrarEvento("TEST", "EVENTO_LOGUEO", "El usuario se logueo en el sistema", token, tokenRefresh);
+                    token = datosJson.getString(TOKEN_KEY);
+                    tokenRefresh = datosJson.getString(TOKEN_REFRESH_KEY);
+                    presenter.registrarEvento(ENV, "EVENTO_LOGUEO", "El usuario se logueo en el sistema", token, tokenRefresh);
                 }
 
             } catch (JSONException e) {
@@ -177,14 +185,14 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
 
             try {
-                String datosJsonString = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra(DATOSJSON_KEY);
                 JSONObject datosJson = new JSONObject(datosJsonString);
 
                 Log.i("LOGUEO_MAIN", "Datos Json Main Thread" + datosJsonString);
 
                 //txtResultado.setText(datosJsonString);
 
-                String resultadoRequest = datosJson.getString("success");
+                String resultadoRequest = datosJson.getString(SUCCESS_KEY);
 
                 if (resultadoRequest == "true") {
 
@@ -192,13 +200,13 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
                     presenter.registrarCantidadLogueos(getApplicationContext());
 
                     Intent i = new Intent(UserLogin.this, Menu.class);
-                    i.putExtra("token", token);
-                    i.putExtra("token_refresh", tokenRefresh);
-                    i.putExtra("user", txtEmail.getText().toString());
+                    i.putExtra(TOKEN_KEY, token);
+                    i.putExtra(TOKEN_REFRESH_KEY, tokenRefresh);
+                    i.putExtra(USER_KEY, txtEmail.getText().toString());
                     startActivity(i);
 
                 } else {
-                    String msg = datosJson.getString("msg");
+                    String msg = datosJson.getString(MSG_KEY);
                     Log.i("LOGUEO_MAIN", msg);
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
                 }

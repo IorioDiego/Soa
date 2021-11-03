@@ -24,7 +24,7 @@ public class ListaLogsView extends AppCompatActivity implements IListaLogs.View 
 
     private ListView logList;
     private TextView sinLogsTxt;
-
+    private final static String AVISO = "No hay inicios de sesion registrados";
     private IListaLogs.Presenter presenter;
 
     @Override
@@ -36,7 +36,7 @@ public class ListaLogsView extends AppCompatActivity implements IListaLogs.View 
         logList = findViewById(R.id.logList);
         HashMap<String, String> logMap = (HashMap<String, String>) presenter.leerCantDeLogueos(getApplicationContext());
         if (logMap.isEmpty()) {
-            sinLogsTxt.setText("No hay Inicios de Sesión registrados");
+            sinLogsTxt.setText(AVISO);
         } else {
             MyAdapter adapter = new MyAdapter(logMap);
             logList.setAdapter(adapter);

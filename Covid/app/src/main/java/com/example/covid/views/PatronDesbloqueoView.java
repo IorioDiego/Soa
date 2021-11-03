@@ -28,6 +28,8 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
 
     String patronFinal = "";
     IPatronDesbloqueo.Presenter presenter;
+    private static final String PATRON_CORRECTO = "Patron CORRECTO", PATRON_INCORRECTO = "Patron INCORRECTO",
+            PATRON_GUARDADO = "Patron guardado correctamente";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +59,11 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                 public void onComplete(List<PatternLockView.Dot> pattern) {
                     String final_pattern = PatternLockUtils.patternToString(mPatterLockView, pattern);
                     if (final_pattern.equals(patronGuardado)) {
-                        Toast.makeText(PatronDesbloqueoView.this, "Patron CORRECTO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PatronDesbloqueoView.this, PATRON_CORRECTO, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(PatronDesbloqueoView.this, UserLogin.class);//podria ir en el presenter
                         startActivity(intent);
                     } else
-                        Toast.makeText(PatronDesbloqueoView.this, "Patron INCORRECTO", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PatronDesbloqueoView.this, PATRON_INCORRECTO, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -103,7 +105,7 @@ public class PatronDesbloqueoView extends AppCompatActivity implements IPatronDe
                 public void onClick(View v) {
                     presenter.escribirPaper(patronFinal);
                     //  Paper.book().write(patronBase,patronFinal);
-                    Toast.makeText(PatronDesbloqueoView.this, "Patron Guardado Correctamente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PatronDesbloqueoView.this, PATRON_GUARDADO, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(PatronDesbloqueoView.this, ConfirmarPatronView.class);
                     startActivity(intent);////////ESTO ROMPE COSAASSS
 

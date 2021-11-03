@@ -12,7 +12,7 @@ public class MenuPresenter implements IMenu.Presenter {
 
     private static final String URI_REFRESH = "http://so-unlam.net.ar/api/api/refresh";
     private IMenu.View view;
-
+    private static final String intentUrl = "url", intentToken = "token_refresh";
     public MenuPresenter(IMenu.View view) {
         this.view = view;
     }
@@ -22,8 +22,8 @@ public class MenuPresenter implements IMenu.Presenter {
 
         Intent i = new Intent((Context) view, ServiceHTTP_PUT.class);
 
-        i.putExtra("url", URI_REFRESH);
-        i.putExtra("token_refresh", token_refresh);
+        i.putExtra(intentUrl, URI_REFRESH);
+        i.putExtra(intentToken, token_refresh);
         ((Context) view).startService(i);
     }
 }

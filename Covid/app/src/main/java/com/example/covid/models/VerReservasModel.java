@@ -12,15 +12,14 @@ import java.util.Map;
 public class VerReservasModel implements IVerReservas.Model {
 
     private  IVerReservas.Presenter presenter;
-
+    private static final String filenameReservas = "reservas";
     public  VerReservasModel(IVerReservas.Presenter presenter){
         this.presenter = presenter;
     }
     @Override
     public List<String> getReservas(String user, Context c) {
         List<String> listDates = new ArrayList<>();
-        SharedPreferences preferencias = c.getSharedPreferences("reservas"+user, Context.MODE_PRIVATE);
-        String n = preferencias.getString("fecha", null);
+        SharedPreferences preferencias = c.getSharedPreferences(filenameReservas + user, Context.MODE_PRIVATE);
 
         Map<String,String> m = (Map<String, String>) preferencias.getAll();
         for (Map.Entry<String, String> reserva :m.entrySet()  ) {

@@ -23,6 +23,11 @@ public class Menu extends AppCompatActivity implements IMenu.View {
     private String token;
     private String token_refresh;
     private IMenu.Presenter presenter;
+    private static final String TOKEN_KEY = "token", TOKEN_REFRESH = "token_refresh",
+            USER_KEY = "user",
+            EVENT_TO_SUBSCRIBE = "com.example.intentservice.intent.action.RESPUESTA_PUT",
+            REFRESH_KEY = "refresh",
+            SUCCESS_KEY = "success";
 
     String userTxt;
     Button reservar, verReservas;
@@ -39,10 +44,10 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        token = extras.getString("token");
-        token_refresh = extras.getString("token_refresh");
+        token = extras.getString(TOKEN_KEY);
+        token_refresh = extras.getString(TOKEN_REFRESH);
 
-        userTxt = extras.getString("user");
+        userTxt = extras.getString(USER_KEY);
         reservar = (Button) findViewById(R.id.buttonReservar);
         verReservas = (Button) findViewById(R.id.buttonVerReservas);
         reservar.setOnClickListener(handleBtonReservar);
@@ -55,7 +60,7 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(Menu.this, VerReservasView.class);
-            intent.putExtra("user", userTxt);
+            intent.putExtra(USER_KEY, userTxt);
             startActivity(intent);
 
         }
@@ -65,7 +70,9 @@ public class Menu extends AppCompatActivity implements IMenu.View {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(Menu.this, ReservasView1.class);
-            intent.putExtra("user", userTxt);
+            intent.putExtra(USER_KEY, userTxt);
+            intent.putExtra(TOKEN_KEY,token);
+            intent.putExtra(TOKEN_REFRESH,token_refresh);
             startActivity(intent);
 
 
@@ -74,7 +81,7 @@ public class Menu extends AppCompatActivity implements IMenu.View {
 
 
     private void configurarBroadcastRecieverRefresh() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_PUT");
+        filtro = new IntentFilter(EVENT_TO_SUBSCRIBE);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverRefresh, filtro);
     }
@@ -84,16 +91,16 @@ public class Menu extends AppCompatActivity implements IMenu.View {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String resultadoRefresh = intent.getStringExtra("refresh");
+            String resultadoRefresh = intent.getStringExtra(REFRESH_KEY);
             JSONObject resultadoRefreshJason = null;
             try {
                 resultadoRefreshJason = new JSONObject(resultadoRefresh);
 
-                String success = resultadoRefreshJason.getString("success");
+                String success = resultadoRefreshJason.getString(SUCCESS_KEY);
 
                 if (success.equals("true")) {
-                    token = resultadoRefreshJason.getString("token");
-                    token_refresh = resultadoRefreshJason.getString("token_refresh");
+                    token = resultadoRefreshJason.getString(TOKEN_KEY);
+                    token_refresh = resultadoRefreshJason.getString(TOKEN_REFRESH);
 
 
                 }

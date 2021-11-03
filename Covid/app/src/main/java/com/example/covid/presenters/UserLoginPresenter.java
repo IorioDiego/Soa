@@ -18,8 +18,20 @@ public class UserLoginPresenter implements IUserLogin.Presenter {
 
     private IUserLogin.View view;
     private IUserLogin.Model model;
-    private static final String URI_LOGIN_USER = "http://so-unlam.net.ar/api/api/login";
-    private static final String URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event";
+    private static final String URI_LOGIN_USER = "http://so-unlam.net.ar/api/api/login",
+            JSON_ENV = "env",
+            JSON_TYPE_EVENTS = "type_events",
+            JSON_DESC = "description",
+            JSON_EVENTO = "evento",
+            JSON_URI = "uri",
+            JSON_DATA = "datosJson",
+            JSON_TOKEN_EVENTO = "tokenEvento",
+            JSON_TOKEN_REFRESH = "token_refresh",
+            JSON_REGISTRAR_EVENTO = "RegistrarEvento",
+            JSON_LOG = "log",
+            URI_REGISTER_EVENT = "http://so-unlam.net.ar/api/api/event",
+            JSON_EMAIL = "email",
+            JSON_PASSWORD = "password";
 
 
     public UserLoginPresenter(IUserLogin.View view) {
@@ -32,12 +44,12 @@ public class UserLoginPresenter implements IUserLogin.Presenter {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("email", email);
-            obj.put("password", pssw);
+            obj.put(JSON_EMAIL, email);
+            obj.put(JSON_PASSWORD, pssw);
             Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
-            i.putExtra("evento", "log");
-            i.putExtra("uri", URI_LOGIN_USER);
-            i.putExtra("datosJson", obj.toString());
+            i.putExtra(JSON_EVENTO, JSON_LOG);
+            i.putExtra(JSON_URI, URI_LOGIN_USER);
+            i.putExtra(JSON_DATA, obj.toString());
             ((Context) view).startService(i);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,17 +62,17 @@ public class UserLoginPresenter implements IUserLogin.Presenter {
         JSONObject obj = new JSONObject();
         try {
 
-            obj.put("env", env);
-            obj.put("type_events", event);
-            obj.put("description", desc);
+            obj.put(JSON_ENV, env);
+            obj.put(JSON_TYPE_EVENTS, event);
+            obj.put(JSON_DESC, desc);
 
 
             Intent i = new Intent((Context) view, ServiceHTTP_POST.class);
-            i.putExtra("evento", "RegistrarEvento");
-            i.putExtra("uri", URI_REGISTER_EVENT);
-            i.putExtra("datosJson", obj.toString());
-            i.putExtra("tokenEvento", token);
-            i.putExtra("token_refresh", token_refresh);
+            i.putExtra(JSON_EVENTO, JSON_REGISTRAR_EVENTO);
+            i.putExtra(JSON_URI, URI_REGISTER_EVENT);
+            i.putExtra(JSON_DATA, obj.toString());
+            i.putExtra(JSON_TOKEN_EVENTO, token);
+            i.putExtra(JSON_TOKEN_REFRESH, token_refresh);
 
             ((Context) view).startService(i);
 

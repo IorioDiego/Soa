@@ -45,8 +45,19 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     private SensorManager sensores;
     private String token;
     private String token_refresh;
-    DecimalFormat dosdecimales = new DecimalFormat("###.###");
-    private static final String ENV = "TEST";
+
+    private static final String ENV = "PROD", EVENTO_RESERVA = "Evento_Reserva",
+            DATOS_JSON_KEY = "datosJson",
+            USER_KEY = "user",
+            TOKEN_KEY = "token",
+            TOKEN_REFRESH_KEY = "token_refresh",
+            ERROR_DE_CONEXION = "Error en la conexion de red",
+            POST_EVENTO = "com.example.intentservice.intent.action.POST_EVENTO",
+            RESPUESTA_PUT = "com.example.intentservice.intent.action.RESPUESTA_PUT",
+            SUCCESS_KEY = "success",
+            REFRESH_KEY = "refresh",
+            TIMEOUT_KEY = "timeout",
+            FALSE_KEY = "false";
     public IntentFilter filtro;
     private RecepetorEvento receiverEvento = new RecepetorEvento();
     private RecepetorRefresh receiverRefresh = new RecepetorRefresh();
@@ -72,9 +83,9 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         Bundle extras = intent.getExtras();
 
 
-        userTxt = extras.getString("user");
-        token = extras.getString("token");
-        token_refresh = extras.getString("token_refresh");
+        userTxt = extras.getString(USER_KEY);
+        token = extras.getString(TOKEN_KEY);
+        token_refresh = extras.getString(TOKEN_REFRESH_KEY);
         configurarBroadcastRecieverPostEvento();
         configurarBroadcastRecieverRefresh();
         Ini_Sensores();
@@ -88,9 +99,10 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 presenter.reservar(currentDate, userTxt, getApplicationContext());
-                presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+                presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+
             } else {
-                Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), ERROR_DE_CONEXION, Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -102,7 +114,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
 
             Intent in = new Intent(ReservasView1.this, ListaShake.class);
-            in.putExtra("user", userTxt.toString());
+            in.putExtra(USER_KEY, userTxt.toString());
             startActivity(in);
 
         }
@@ -141,10 +153,12 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
                         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
                         if (networkInfo != null && networkInfo.isConnected()) {
                             presenter.reservar(currentDate, userTxt, getApplicationContext());
-                            presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+                            presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
                             presenter.RegistrarCantidadShakes(getApplicationContext(), userTxt);
+
+
                         } else {
-                            Toast.makeText(getApplicationContext(), "Error de conexion a la red", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), ERROR_DE_CONEXION, Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -160,7 +174,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     }
 
     private void configurarBroadcastRecieverPostEvento() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.POST_EVENTO");
+        filtro = new IntentFilter(POST_EVENTO);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverEvento, filtro);
     }
@@ -172,18 +186,20 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
 
             try {
-                String datosJsonString = intent.getStringExtra("datosJson");
+                String datosJsonString = intent.getStringExtra(DATOS_JSON_KEY);
 
                 JSONObject datosJson = new JSONObject(datosJsonString);
-                String resultadoRequest = datosJson.getString("success");
+                String resultadoRequest = datosJson.getString(SUCCESS_KEY);
 
-                if (resultadoRequest == "false") {
+                if (resultadoRequest == FALSE_KEY) {
 
-                    String code = intent.getStringExtra("timeout");
+                    String code = intent.getStringExtra(TIMEOUT_KEY);
 
                     if (Integer.parseInt(code) == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
                         presenter.actulizarToken(token_refresh);
                     }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Se reservó un lugar correctamente", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -194,7 +210,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
 
     private void configurarBroadcastRecieverRefresh() {
-        filtro = new IntentFilter("com.example.intentservice.intent.action.RESPUESTA_PUT");
+        filtro = new IntentFilter(RESPUESTA_PUT);
         filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(receiverRefresh, filtro);
     }
@@ -205,12 +221,12 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         public void onReceive(Context context, Intent intent) {
 
             try {
-                String datosJsonString = intent.getStringExtra("refresh");
+                String datosJsonString = intent.getStringExtra(REFRESH_KEY);
                 JSONObject datosJson = new JSONObject(datosJsonString);
-                token = datosJson.getString("success");
-                token_refresh = datosJson.getString("token");
-                token_refresh = datosJson.getString("token_refresh");
-                presenter.postearReserva(ENV, "EVENTO_RESERVA", "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+                token = datosJson.getString(SUCCESS_KEY);
+                token_refresh = datosJson.getString(TOKEN_KEY);
+                token_refresh = datosJson.getString(TOKEN_REFRESH_KEY);
+                presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
 
 
             } catch (JSONException e) {

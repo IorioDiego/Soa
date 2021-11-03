@@ -41,7 +41,7 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
     private IUserRegister.Presenter presenter;
 
     String token;
-    String tokenRefresh;
+    String tokenRefresh; 
 
     private static final String  DATOS_JSON_KEY = "datosJson",
             SUCCESS_KEY = "success",

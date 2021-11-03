@@ -83,9 +83,7 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
         btnListaLogs.setOnClickListener(HandlerBtnListar);
 
         sensores = (SensorManager) getSystemService(SENSOR_SERVICE);
-        configurarBroadcastReciever();
 
-        configurarBroadcastRecieverPostEvento();
 
 
         //Chequeo bateria
@@ -233,7 +231,11 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     @Override
     protected void onStop() {
+
         super.onStop();
+        unregisterReceiver(receiverReg);
+        unregisterReceiver(receiverEvento);
+
     }
 
     @Override
@@ -251,6 +253,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     @Override
     protected void onRestart() {
+        configurarBroadcastReciever();
+
+        configurarBroadcastRecieverPostEvento();
         String l = presenter.leerCantDeLogueos(getApplicationContext());
         txtViewLogs.setText(l);
         super.onRestart();
@@ -258,6 +263,9 @@ public class UserLogin extends AppCompatActivity implements IUserLogin.View {
 
     @Override
     protected void onResume() {
+        configurarBroadcastReciever();
+
+        configurarBroadcastRecieverPostEvento();
         String l = presenter.leerCantDeLogueos(getApplicationContext());
         txtViewLogs.setText(l);
         super.onResume();

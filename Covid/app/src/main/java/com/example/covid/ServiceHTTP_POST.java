@@ -94,7 +94,7 @@ public class ServiceHTTP_POST extends IntentService {
 
             Intent i = new Intent("com.example.intentservice.intent.action.POST_EVENTO");
             i.putExtra(DATOS_JSON_KEY, result);
-            if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
+            if (code == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 i.putExtra(TIMEOUT, code);
             }
             sendBroadcast(i);
@@ -133,7 +133,7 @@ public class ServiceHTTP_POST extends IntentService {
 
                 InputStreamReader inputStream = new InputStreamReader(urlConnection.getErrorStream());
                 result = convertInputStreamToString(inputStream).toString();
-            } else if (responseCode == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 InputStreamReader inputStream = new InputStreamReader(urlConnection.getErrorStream());
                 result = convertInputStreamToString(inputStream).toString();
                 code = responseCode;

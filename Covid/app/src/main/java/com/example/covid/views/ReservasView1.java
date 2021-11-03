@@ -58,9 +58,25 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
             REFRESH_KEY = "refresh",
             TIMEOUT_KEY = "timeout",
             FALSE_KEY = "false";
+    private static final int SHAKE_THRESHOLD = 800;
     public IntentFilter filtro;
     private RecepetorEvento receiverEvento = new RecepetorEvento();
     private RecepetorRefresh receiverRefresh = new RecepetorRefresh();
+
+    int cont=0;
+
+
+    private static final int FORCE_THRESHOLD = 350;
+    private static final int TIME_THRESHOLD = 100;
+    private static final int SHAKE_TIMEOUT = 500;
+    private static final int SHAKE_DURATION = 1000;
+    private static final int SHAKE_COUNT = 3;
+
+    private float mLastX=-1.0f, mLastY=-1.0f, mLastZ=-1.0f;
+    private long mLastTime;
+    private int mShakeCount = 0;
+    private long mLastShake;
+    private long mLastForce;
 
 
     @Override
@@ -86,8 +102,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         userTxt = extras.getString(USER_KEY);
         token = extras.getString(TOKEN_KEY);
         token_refresh = extras.getString(TOKEN_REFRESH_KEY);
-        configurarBroadcastRecieverPostEvento();
-        configurarBroadcastRecieverRefresh();
+
         Ini_Sensores();
     }
 
@@ -148,20 +163,34 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
         synchronized (this) {
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
-                    if ((Math.abs(event.values[0]) > 30) || (Math.abs(event.values[1]) > 30) || (Math.abs(event.values[2]) > 30)) {
-                        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                        if (networkInfo != null && networkInfo.isConnected()) {
-
-                            presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
-                            presenter.RegistrarCantidadShakes(getApplicationContext(), userTxt);
-
-
-                        } else {
-                            Toast.makeText(getApplicationContext(), ERROR_DE_CONEXION, Toast.LENGTH_SHORT).show();
-                        }
-
+                    long now = System.currentTimeMillis();
+                    if ((now - mLastForce) > SHAKE_TIMEOUT) {
+                        mShakeCount = 0;
                     }
+
+                    if ((now - mLastTime) > TIME_THRESHOLD) {
+                        long diff = now - mLastTime;
+                        float speed = Math.abs(event.values[0] + event.values[1] +event.values[2] - mLastX - mLastY - mLastZ) / diff * 10000;
+                        if (speed > FORCE_THRESHOLD) {
+                            if ((++mShakeCount >= SHAKE_COUNT) && (now - mLastShake > SHAKE_DURATION)) {
+                                mLastShake = now;
+                                mShakeCount = 0;
+
+
+                                presenter.postearReserva(ENV, EVENTO_RESERVA, "El usuario hizo una reserva para " + currentDate.toString(), token, token_refresh);
+                                presenter.RegistrarCantidadShakes(getApplicationContext(), userTxt);
+                            }
+                            mLastForce = now;
+                        }
+                        mLastTime = now;
+                        mLastX = event.values[0];
+                        mLastY =event.values[1];
+                        mLastZ = event.values[2];
+                    }
+
+
+
+
                     break;
                 case Sensor.TYPE_PROXIMITY:
                     if (event.values[0] <= 1) {
@@ -195,7 +224,7 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
 
                     String code = intent.getStringExtra(TIMEOUT_KEY);
 
-                    if (Integer.parseInt(code) == HttpURLConnection.HTTP_CLIENT_TIMEOUT) {
+                    if (Integer.parseInt(code) == HttpURLConnection.HTTP_UNAUTHORIZED) {
                         presenter.actulizarToken(token_refresh);
                     }
                 }else{
@@ -248,7 +277,8 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     protected void onStop() {
 
         Parar_Sensores();
-
+        configurarBroadcastRecieverPostEvento();
+        configurarBroadcastRecieverRefresh();
         super.onStop();
     }
 
@@ -265,21 +295,24 @@ public class ReservasView1 extends AppCompatActivity implements IReservas.View, 
     @Override
     protected void onPause() {
         Parar_Sensores();
-
+        unregisterReceiver(receiverRefresh);
+        unregisterReceiver(receiverEvento);
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
         Ini_Sensores();
-
+        configurarBroadcastRecieverPostEvento();
+        configurarBroadcastRecieverRefresh();
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        configurarBroadcastRecieverPostEvento();
+        configurarBroadcastRecieverRefresh();
         Ini_Sensores();
     }
 }

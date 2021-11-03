@@ -70,7 +70,7 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
         btnReg = (Button) findViewById(R.id.buttonReg);
         btnReg.setOnClickListener(HandlerBtnReg);
-        configurarBroadcastReciever();
+
     }
 
     private void configurarBroadcastReciever() {
@@ -118,7 +118,7 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
                     Intent i = new Intent(UserRegister.this, UserLogin.class);
 
                     startActivity(i);
-                    finish();
+
 
                 } else {
                     String msg = datosJson.getString(MSG_KEY);
@@ -134,29 +134,34 @@ public class UserRegister extends AppCompatActivity implements IUserRegister.Vie
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(receiverReg);
+
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
-
+        unregisterReceiver(receiverReg);
 
         super.onStop();
+
     }
 
     @Override
     protected void onRestart() {
-
+        configurarBroadcastReciever();
         super.onRestart();
     }
 
     @Override
     protected void onResume() {
-
+        configurarBroadcastReciever();
         super.onResume();
 
     }
+    @Override
+    public void onBackPressed() {
 
+        super.onBackPressed();
+    }
 
 }
